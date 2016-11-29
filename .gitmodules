@@ -1,3 +1,6 @@
 [submodule "libs/xXx"]
 	path = libs/xXx
 	url = https://github.com/XMrVertigoX/xXx_CPP
+[submodule "libs/CMSIS"]
+	path = libs/CMSIS
+	url = https://github.com/ARM-software/CMSIS.git
