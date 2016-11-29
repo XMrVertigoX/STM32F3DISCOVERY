@@ -2,14 +2,18 @@
 
 PROJECT_NAME = blink
 
-# ----- Source code------------------------------------------------------------
+# ----- Symbols ---------------------------------------------------------------
 
 SYMBOLS += STM32F303xC
-SYMBOLD += __FPU_PRESENT=1
-SYMBOLD += ARM_MATH_CM4
+SYMBOLS += ARM_MATH_CM4
+
+# ----- Source code ------------------------------------------------------------
 
 # CMSIS
-INCLUDE_DIRS += Drivers/CMSIS/Include
+INCLUDE_DIRS += ../libs/CMSIS/CMSIS/Include
+LIBRARY_DIRS += ../libs/CMSIS/CMSIS/Lib/GCC
+
+# CMSIS (STM32)
 INCLUDE_DIRS += Drivers/CMSIS/Device/ST/STM32F3xx/Include
 SOURCE_FILES += Drivers/CMSIS/Device/ST/STM32F3xx/Source/Templates/system_stm32f3xx.c
 SOURCE_FILES += Drivers/CMSIS/Device/ST/STM32F3xx/Source/Templates/gcc/startup_stm32f303xc.s
@@ -46,9 +50,7 @@ SOURCE_FILES += $(wildcard App/*.cpp)
 
 # ----- Libraries -------------------------------------------------------------
 
-# LIBRARY_DIRS +=
-
-# LIBRARIES +=
+LIBRARIES += arm_cortexM4lf_math
 
 # ----- Flags -----------------------------------------------------------------
 
