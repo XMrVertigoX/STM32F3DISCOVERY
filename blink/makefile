@@ -7,42 +7,45 @@ PROJECT_NAME = blink
 SYMBOLS += STM32F303xC
 SYMBOLS += ARM_MATH_CM4
 
-# ----- Source code ------------------------------------------------------------
+# ----- Submodules ------------------------------------------------------------
+
+LIBS = ../libs
+
+INCLUDE_DIRS += $(LIBS)
 
 # CMSIS
-INCLUDE_DIRS += ../libs/CMSIS/CMSIS/Include
-LIBRARY_DIRS += ../libs/CMSIS/CMSIS/Lib/GCC
+INCLUDE_DIRS += $(LIBS)/CMSIS/CMSIS/Include
+LIBRARY_DIRS += $(LIBS)/CMSIS/CMSIS/Lib/GCC
 
-# CMSIS (STM32)
-INCLUDE_DIRS += Drivers/CMSIS/Device/ST/STM32F3xx/Include
-SOURCE_FILES += Drivers/CMSIS/Device/ST/STM32F3xx/Source/Templates/system_stm32f3xx.c
-SOURCE_FILES += Drivers/CMSIS/Device/ST/STM32F3xx/Source/Templates/gcc/startup_stm32f303xc.s
+# xXx
+SOURCE_FILES += $(wildcard $(LIBS)/xXx/os/*.cpp)
+SOURCE_FILES += $(wildcard $(LIBS)/xXx/support/*.cpp)
 
-# Driver
-INCLUDE_DIRS += Drivers/STM32F3xx_HAL_Driver/Inc
-SOURCE_FILES += $(wildcard Drivers/STM32F3xx_HAL_Driver/Src/*.c)
-
-# FreeRTOS
-INCLUDE_DIRS += Middlewares/Third_Party/FreeRTOS/Source/include
-SOURCE_FILES += $(wildcard Middlewares/Third_Party/FreeRTOS/Source/*.c)
-
-# FreeRTOS (Portable)
-INCLUDE_DIRS += Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM4F
-SOURCE_FILES += Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM4F/port.c
-SOURCE_FILES += Middlewares/Third_Party/FreeRTOS/Source/portable/MemMang/heap_4.c
-
-# FreeRTOS (CMSIS RTOS)
-INCLUDE_DIRS += Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS
-SOURCE_FILES += Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS/cmsis_os.c
-
-# Libraries
-INCLUDE_DIRS += ../libs
-SOURCE_FILES += $(wildcard ../libs/xXx/os/*.cpp)
-SOURCE_FILES += $(wildcard ../libs/xXx/support/*.cpp)
+# ----- Project ---------------------------------------------------------------
 
 # STM32CubeMX
 INCLUDE_DIRS += Inc
 SOURCE_FILES += $(wildcard Src/*.c)
+
+# STM32CubeMX (Device)
+INCLUDE_DIRS += Drivers/CMSIS/Device/ST/STM32F3xx/Include
+SOURCE_FILES += Drivers/CMSIS/Device/ST/STM32F3xx/Source/Templates/system_stm32f3xx.c
+SOURCE_FILES += Drivers/CMSIS/Device/ST/STM32F3xx/Source/Templates/gcc/startup_stm32f303xc.s
+
+# STM32CubeMX (Driver)
+INCLUDE_DIRS += Drivers/STM32F3xx_HAL_Driver/Inc
+SOURCE_FILES += $(wildcard Drivers/STM32F3xx_HAL_Driver/Src/*.c)
+
+# STM32CubeMX (FreeRTOS)
+INCLUDE_DIRS += Middlewares/Third_Party/FreeRTOS/Source/include
+SOURCE_FILES += $(wildcard Middlewares/Third_Party/FreeRTOS/Source/*.c)
+
+INCLUDE_DIRS += Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM4F
+SOURCE_FILES += Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM4F/port.c
+SOURCE_FILES += Middlewares/Third_Party/FreeRTOS/Source/portable/MemMang/heap_4.c
+
+INCLUDE_DIRS += Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS
+SOURCE_FILES += Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS/cmsis_os.c
 
 # Application
 INCLUDE_DIRS += App
