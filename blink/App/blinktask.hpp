@@ -7,7 +7,7 @@
 
 using namespace xXx;
 
-const uint8_t numLeds = 4;
+const uint8_t numLeds = 8;
 
 class BlinkTask : public ArduinoTask {
   public:

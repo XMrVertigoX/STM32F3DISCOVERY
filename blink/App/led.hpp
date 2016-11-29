@@ -4,10 +4,14 @@
 #include <stm32f3xx_hal.h>
 
 enum LedPin_t {
-    LD3 = GPIO_PIN_6,
-    LD4 = GPIO_PIN_8,
-    LD5 = GPIO_PIN_9,
-    LD6 = GPIO_PIN_7
+    LD3  = GPIO_PIN_9,
+    LD4  = GPIO_PIN_8,
+    LD5  = GPIO_PIN_10,
+    LD6  = GPIO_PIN_15,
+    LD7  = GPIO_PIN_11,
+    LD8  = GPIO_PIN_14,
+    LD9  = GPIO_PIN_12,
+    LD10 = GPIO_PIN_13
 };
 
 class Led {
@@ -18,7 +22,7 @@ class Led {
     void toggle();
 
   private:
-    LedPin_t _ledPin;
+    uint16_t _ledPin;
 };
 
 #endif /* LED_HPP_ */
