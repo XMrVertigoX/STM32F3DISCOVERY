@@ -1,8 +1,3 @@
 **/_out
 
-# CubeMX output for TrueStudio
-**/.cproject
 **/.mxproject
-**/.project
-**/.settings
-**/*.launch
