@@ -45,7 +45,8 @@
 /* Exported macro ------------------------------------------------------------*/
 /* Exported functions ------------------------------------------------------- */
 
-void EXTI0_IRQHandler(void);
+void SysTick_Handler(void);
+void TIM1_UP_TIM16_IRQHandler(void);
 
 #ifdef __cplusplus
 }
