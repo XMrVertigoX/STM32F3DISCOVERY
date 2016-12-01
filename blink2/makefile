@@ -43,7 +43,7 @@ SOURCE_FILES += $(DEVICE)/Source/Templates/system_stm32f3xx.c
 SOURCE_FILES += $(DEVICE)/Source/Templates/gcc/startup_stm32f303xc.s
 
 INCLUDE_DIRS += $(DRIVER)/Inc
-SOURCE_FILES += $(filter-out $(wildcard $(DRIVER)/Src/*_template*),$(wildcard $(DRIVER)/Src/*.c))
+SOURCE_FILES += $(wildcard $(DRIVER)/Src/*.c)
 
 INCLUDE_DIRS += $(FREERTOS)/include
 SOURCE_FILES += $(wildcard $(FREERTOS)/*.c)
