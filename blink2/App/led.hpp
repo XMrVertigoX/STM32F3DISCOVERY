@@ -3,6 +3,8 @@
 
 #include <stm32f3xx_hal.h>
 
+#include "gpio.hpp"
+
 enum LedPin_t {
     LD3  = GPIO_PIN_9,
     LD4  = GPIO_PIN_8,
@@ -14,15 +16,10 @@ enum LedPin_t {
     LD10 = GPIO_PIN_13
 };
 
-class Led {
+class Led : public Gpio {
   public:
     Led(LedPin_t ledPin);
     ~Led();
-
-    void toggle();
-
-  private:
-    uint16_t _ledPin;
 };
 
 #endif /* LED_HPP_ */

@@ -18,7 +18,7 @@ class BlinkTask : public ArduinoTask {
     void setup();
 
   private:
-    Led _leds[numLeds];
+    Led _led[numLeds];
 };
 
 #endif /* BLINKTASK_HPP_ */

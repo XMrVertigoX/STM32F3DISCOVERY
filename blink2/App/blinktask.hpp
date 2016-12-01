@@ -15,13 +15,15 @@ class BlinkTask : public ArduinoTask {
     ~BlinkTask();
 
     void reverse();
+    void foo();
 
     void loop();
     void setup();
 
   private:
-    Led _leds[numLeds];
-    bool _reverse = false;
+    Led _led[numLeds];
+    Gpio _button;
+    bool _reverse;
 };
 
 #endif /* BLINKTASK_HPP_ */
