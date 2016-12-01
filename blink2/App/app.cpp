@@ -3,4 +3,6 @@
 
 static BlinkTask blinkTask;
 
-void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {}
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
+	blinkTask.reverse();
+}

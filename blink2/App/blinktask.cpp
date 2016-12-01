@@ -17,12 +17,24 @@ BlinkTask::BlinkTask()
 
 BlinkTask::~BlinkTask() {}
 
+void BlinkTask::reverse() {
+    _reverse = !_reverse;
+}
+
 void BlinkTask::setup() {}
 
 void BlinkTask::loop() {
     for (int i = 0; i < numLeds; ++i) {
-        _leds[i].toggle();
+        int led;
+
+        if (_reverse) {
+            led = (numLeds - 1) - i;
+        } else {
+            led = i;
+        }
+
+        _leds[led].toggle();
         vTaskDelay(ms2ticks(125));
-        _leds[i].toggle();
+        _leds[led].toggle();
     }
 }
