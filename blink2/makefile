@@ -21,40 +21,40 @@ LINKER_SCRIPT = TrueSTUDIO/blink2/STM32F303VC_FLASH.ld
 SYMBOLS += STM32F303xC
 SYMBOLS += ARM_MATH_CM4
 
-# ----- Submodules ------------------------------------------------------------
+# ----- Sources files ---------------------------------------------------------
 
 INCLUDE_DIRS += $(LIBS)
-
-# CMSIS
-INCLUDE_DIRS += $(CMSIS)/Include
-LIBRARY_DIRS += $(CMSIS)/Lib/GCC
 
 # xXx
 SOURCE_FILES += $(wildcard $(XXX)/os/*.cpp)
 SOURCE_FILES += $(wildcard $(XXX)/support/*.cpp)
 
-# ----- Project ---------------------------------------------------------------
+# CMSIS
+INCLUDE_DIRS += $(CMSIS)/Include
+LIBRARY_DIRS += $(CMSIS)/Lib/GCC
 
-INCLUDE_DIRS += Inc
-SOURCE_FILES += $(wildcard Src/*.c)
-
+# CMSIS device
 INCLUDE_DIRS += $(DEVICE)/Include
-SOURCE_FILES += $(DEVICE)/Source/Templates/system_stm32f3xx.c
-SOURCE_FILES += $(DEVICE)/Source/Templates/gcc/startup_stm32f303xc.s
+SOURCE_FILES += $(wildcard $(DEVICE)/Source/Templates/gcc/*.s)
 
+# HAL driver
 INCLUDE_DIRS += $(DRIVER)/Inc
 SOURCE_FILES += $(wildcard $(DRIVER)/Src/*.c)
 
+# FreeRTOS
 INCLUDE_DIRS += $(FREERTOS)/include
-SOURCE_FILES += $(wildcard $(FREERTOS)/*.c)
-
-INCLUDE_DIRS += $(FREERTOS)/portable/GCC/ARM_CM4F
-SOURCE_FILES += $(FREERTOS)/portable/GCC/ARM_CM4F/port.c
-SOURCE_FILES += $(FREERTOS)/portable/MemMang/heap_4.c
-
 INCLUDE_DIRS += $(FREERTOS)/CMSIS_RTOS
-SOURCE_FILES += $(FREERTOS)/CMSIS_RTOS/cmsis_os.c
+INCLUDE_DIRS += $(FREERTOS)/portable/GCC/ARM_CM4F
+SOURCE_FILES += $(wildcard $(FREERTOS)/*.c)
+SOURCE_FILES += $(wildcard $(FREERTOS)/CMSIS_RTOS/*.c)
+SOURCE_FILES += $(wildcard $(FREERTOS)/portable/GCC/ARM_CM4F/*.c)
+SOURCE_FILES += $(wildcard $(FREERTOS)/portable/MemMang/*.c)
 
+# STM32CubeMX auto generated code
+INCLUDE_DIRS += Inc
+SOURCE_FILES += $(wildcard Src/*.c)
+
+# Project/Application
 INCLUDE_DIRS += App
 SOURCE_FILES += $(wildcard App/*.cpp)
 
@@ -69,14 +69,14 @@ GCCFLAGS += -mthumb
 GCCFLAGS += -mfloat-abi=hard
 GCCFLAGS += -mfpu=fpv4-sp-d16
 
+CPPFLAGS +=
+
 COMMON_CFLAGS += -g
 COMMON_CFLAGS += -Og
 
 CFLAGS += -std=gnu11
 
 CXXFLAGS += -std=gnu++14
-
-# CPPFLAGS +=
 
 LDFLAGS += -T $(realpath $(LINKER_SCRIPT))
 
@@ -87,4 +87,4 @@ TOOLCHAIN_PREFIX = arm-none-eabi-
 include ../libs/xXx/utils/rules.mk
 
 download: $(EXECUTABLE)
-	arm-none-eabi-gdb -q -x download.gdb $<
+	$(TOOLCHAIN_PREFIX)gdb -q -x download.gdb $<
