@@ -2,37 +2,34 @@
 
 #include "gpio.hpp"
 
-Gpio_InterruptCallback_t Gpio::_callback[16];
-void *Gpio::_user[16];
-
 Gpio::Gpio(GPIO_TypeDef *port, uint16_t pin) : _port(port), _pin(pin) {}
 
 Gpio::~Gpio() {}
 
-Gpio_Status_t Gpio::disableInterrupt() {
+void Gpio::disableInterrupt() {
     _callback[_pin] = NULL;
     _user[_pin]     = NULL;
-
-    return Gpio_SUCCESS;
 }
 
-Gpio_Status_t Gpio::enableInterrupt(Gpio_InterruptCallback_t callback,
-                                    void *user) {
+int Gpio::enableInterrupt(Gpio_Callback_t callback, void *user) {
     if (_callback[_pin]) {
-        return Gpio_FAILURE;
+        return (1);
     }
 
     _callback[_pin] = callback;
     _user[_pin]     = user;
 
-    return Gpio_SUCCESS;
+    return (0);
 }
 
-Gpio_Status_t Gpio::toggle() {
+void Gpio::toggle() {
     HAL_GPIO_TogglePin(_port, _pin);
-
-    return Gpio_SUCCESS;
 }
+
+/* ----- Static -------------------------------------------------------------*/
+
+Gpio_Callback_t Gpio::_callback[16];
+void *Gpio::_user[16];
 
 void Gpio::callback(uint16_t pin) {
     if (_callback[pin]) {

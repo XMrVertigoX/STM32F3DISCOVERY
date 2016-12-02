@@ -3,19 +3,16 @@
 
 #include <stm32f3xx_hal.h>
 
-typedef void (*Gpio_InterruptCallback_t)(void *user);
-
-enum Gpio_Status_t { Gpio_SUCCESS, Gpio_FAILURE };
+typedef void (*Gpio_Callback_t)(void *user);
 
 class Gpio {
   public:
     Gpio(GPIO_TypeDef *port, uint16_t pin);
     virtual ~Gpio();
 
-    Gpio_Status_t disableInterrupt();
-    Gpio_Status_t enableInterrupt(Gpio_InterruptCallback_t callback,
-                                  void *user);
-    Gpio_Status_t toggle();
+    void disableInterrupt();
+    int enableInterrupt(Gpio_Callback_t callback, void *user);
+    void toggle();
 
     static void callback(uint16_t pin);
 
@@ -23,7 +20,7 @@ class Gpio {
     GPIO_TypeDef *_port;
     uint16_t _pin;
 
-    static Gpio_InterruptCallback_t _callback[];
+    static Gpio_Callback_t _callback[];
     static void *_user[];
 };
 
