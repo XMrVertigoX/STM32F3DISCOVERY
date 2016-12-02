@@ -3,20 +3,21 @@
 
 #include <stm32f3xx_hal.h>
 
-typedef void (*Gpio_Callback_t)(void *user);
+#include <xXx/interfaces/igpio.hpp>
 
-enum Gpio_Status_t { Gpio_Success, Gpio_Failure };
+using namespace xXx;
 
-class Gpio {
+class Gpio : public IGpio {
   public:
     Gpio(GPIO_TypeDef *port, uint16_t pin);
     virtual ~Gpio();
 
-    void disableInterrupt();
-    uint8_t enableInterrupt(Gpio_Callback_t callback, void *user);
-    uint8_t read();
+    bool read();
     void toggle();
-    void write(uint8_t value);
+    void write(bool state);
+
+    void disableInterrupt();
+    void enableInterrupt(IGpio_Callback_t callback, void *user);
 
     static void callback(uint16_t pin);
 
@@ -24,7 +25,7 @@ class Gpio {
     GPIO_TypeDef *_port;
     uint16_t _pin;
 
-    static Gpio_Callback_t _callback[];
+    static IGpio_Callback_t _callback[];
     static void *_user[];
 };
 
