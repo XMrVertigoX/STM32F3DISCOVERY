@@ -2,6 +2,10 @@
 
 #include "gpio.hpp"
 
+static inline void limit(uint8_t &value, uint8_t max) {
+    if (value > max) value = max;
+}
+
 Gpio::Gpio(GPIO_TypeDef *port, uint16_t pin) : _port(port), _pin(pin) {}
 
 Gpio::~Gpio() {}
@@ -11,7 +15,7 @@ void Gpio::disableInterrupt() {
     _user[_pin]     = NULL;
 }
 
-int Gpio::enableInterrupt(Gpio_Callback_t callback, void *user) {
+uint8_t Gpio::enableInterrupt(Gpio_Callback_t callback, void *user) {
     if (_callback[_pin]) {
         return (1);
     }
@@ -22,8 +26,17 @@ int Gpio::enableInterrupt(Gpio_Callback_t callback, void *user) {
     return (0);
 }
 
+uint8_t Gpio::read() {
+    return ((int)HAL_GPIO_ReadPin(_port, _pin));
+}
+
 void Gpio::toggle() {
     HAL_GPIO_TogglePin(_port, _pin);
+}
+
+void Gpio::write(uint8_t pinState) {
+    limit(pinState, 1);
+    HAL_GPIO_WritePin(_port, _pin, (GPIO_PinState)pinState);
 }
 
 /* ----- Static -------------------------------------------------------------*/
