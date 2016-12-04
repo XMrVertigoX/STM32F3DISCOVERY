@@ -5,12 +5,14 @@
 
 #include "blinktask.hpp"
 
-#define function []
-
 using namespace xXx;
 
 static inline TickType_t ms2ticks(TickType_t ms) {
     return (ms / portTICK_PERIOD_MS);
+}
+
+static inline void buttonInterruptCallback(void *user) {
+    static_cast<BlinkTask *>(user)->reverse();
 }
 
 BlinkTask::BlinkTask()
@@ -25,9 +27,7 @@ void BlinkTask::reverse() {
 }
 
 void BlinkTask::setup() {
-    _button.enableInterrupt(
-        function(void *user) { static_cast<BlinkTask *>(user)->reverse(); },
-        this);
+    _button.enableInterrupt(buttonInterruptCallback, this);
 }
 
 void BlinkTask::loop() {
