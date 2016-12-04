@@ -17,12 +17,7 @@ void Gpio::toggle() {
 }
 
 void Gpio::write(bool state) {
-    // TODO: Check if explicit cast from boolean to GPIO_PinState is save
-    if (state) {
-        HAL_GPIO_WritePin(_port, _pin, GPIO_PIN_SET);
-    } else {
-        HAL_GPIO_WritePin(_port, _pin, GPIO_PIN_RESET);
-    }
+    HAL_GPIO_WritePin(_port, _pin, (GPIO_PinState)state);
 }
 
 void Gpio::disableInterrupt() {
