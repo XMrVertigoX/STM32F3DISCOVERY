@@ -35,28 +35,25 @@ LIBRARY_DIRS += $(CMSIS)/Lib/GCC
 
 # CMSIS device
 INCLUDE_DIRS += $(DEVICE)/Include
-SOURCE_FILES += $(wildcard $(DEVICE)/Source/Templates/gcc/*.s)
+SOURCE_FILES += $(shell find $(DEVICE) -regextype sed -iregex ".*/*\.[cs]")
 
 # HAL driver
 INCLUDE_DIRS += $(DRIVER)/Inc
-SOURCE_FILES += $(wildcard $(DRIVER)/Src/*.c)
+SOURCE_FILES += $(shell find $(DRIVER) -regextype sed -iregex ".*/*\.[cs]")
 
 # FreeRTOS
-INCLUDE_DIRS += $(FREERTOS)/include
 INCLUDE_DIRS += $(FREERTOS)/CMSIS_RTOS
+INCLUDE_DIRS += $(FREERTOS)/include
 INCLUDE_DIRS += $(FREERTOS)/portable/GCC/ARM_CM4F
-SOURCE_FILES += $(wildcard $(FREERTOS)/*.c)
-SOURCE_FILES += $(wildcard $(FREERTOS)/CMSIS_RTOS/*.c)
-SOURCE_FILES += $(wildcard $(FREERTOS)/portable/GCC/ARM_CM4F/*.c)
-SOURCE_FILES += $(wildcard $(FREERTOS)/portable/MemMang/*.c)
+SOURCE_FILES += $(shell find $(FREERTOS) -regextype sed -iregex ".*/*\.[cs]")
 
 # STM32CubeMX auto generated code
 INCLUDE_DIRS += Inc
-SOURCE_FILES += $(wildcard Src/*.c)
+SOURCE_FILES += $(shell find ./Src -regextype sed -iregex ".*/*\.[cs]")
 
 # Project/Application
 INCLUDE_DIRS += App
-SOURCE_FILES += $(wildcard App/*.cpp)
+SOURCE_FILES += $(shell find ./App -regextype sed -iregex ".*/*\.cpp")
 
 # ----- Libraries -------------------------------------------------------------
 

@@ -14,7 +14,7 @@ DRIVER   = Drivers/STM32F3xx_HAL_Driver
 FREERTOS = Middlewares/Third_Party/FreeRTOS/Source
 
 #  Files
-LINKER_SCRIPT = $(realpath STM32F303VC_FLASH.ld)
+LINKER_SCRIPT = TrueSTUDIO/blink/STM32F303VC_FLASH.ld
 
 # ----- Symbols ---------------------------------------------------------------
 
@@ -35,26 +35,32 @@ SOURCE_FILES += $(wildcard $(XXX)/support/*.cpp)
 
 # ----- Project ---------------------------------------------------------------
 
+# STM32CubeMX auto generated code
 INCLUDE_DIRS += Inc
 SOURCE_FILES += $(wildcard Src/*.c)
 
+# CMSIS device
 INCLUDE_DIRS += $(DEVICE)/Include
-SOURCE_FILES += $(DEVICE)/Source/Templates/system_stm32f3xx.c
 SOURCE_FILES += $(DEVICE)/Source/Templates/gcc/startup_stm32f303xc.s
 
+# HAL driver
 INCLUDE_DIRS += $(DRIVER)/Inc
 SOURCE_FILES += $(wildcard $(DRIVER)/Src/*.c)
 
+# FreeRTOS
 INCLUDE_DIRS += $(FREERTOS)/include
 SOURCE_FILES += $(wildcard $(FREERTOS)/*.c)
 
+# FreeRTOS (portable)
 INCLUDE_DIRS += $(FREERTOS)/portable/GCC/ARM_CM4F
 SOURCE_FILES += $(FREERTOS)/portable/GCC/ARM_CM4F/port.c
 SOURCE_FILES += $(FREERTOS)/portable/MemMang/heap_4.c
 
+# FreeRTOS (CMSOS RTOS)
 INCLUDE_DIRS += $(FREERTOS)/CMSIS_RTOS
 SOURCE_FILES += $(FREERTOS)/CMSIS_RTOS/cmsis_os.c
 
+# Application
 INCLUDE_DIRS += App
 SOURCE_FILES += $(wildcard App/*.cpp)
 
@@ -76,7 +82,9 @@ CFLAGS += -std=gnu11
 
 CXXFLAGS += -std=gnu++14
 
-# CPPFLAGS +=
+ASMFLAGS +=
+
+CPPFLAGS +=
 
 LDFLAGS += -T $(LINKER_SCRIPT)
 
