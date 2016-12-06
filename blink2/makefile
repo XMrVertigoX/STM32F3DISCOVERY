@@ -5,9 +5,8 @@ PROJECT_NAME = blink2
 # ----- Directories and files -------------------------------------------------
 
 # Directories
-LIBS  = ../libs
-CMSIS = $(LIBS)/CMSIS/CMSIS
-XXX   = $(LIBS)/xXx
+LIBS_DIR    = ../libs
+PROJECT_DIR = .
 
 DEVICE   = Drivers/CMSIS/Device/ST/STM32F3xx
 DRIVER   = Drivers/STM32F3xx_HAL_Driver
@@ -21,39 +20,38 @@ LINKER_SCRIPT = TrueSTUDIO/blink2/STM32F303VC_FLASH.ld
 SYMBOLS += STM32F303xC
 SYMBOLS += ARM_MATH_CM4
 
-# ----- Sources files ---------------------------------------------------------
+# ----- Include directories ---------------------------------------------------
 
-INCLUDE_DIRS += $(LIBS)
-
-# xXx
-SOURCE_FILES += $(wildcard $(XXX)/os/*.cpp)
-SOURCE_FILES += $(wildcard $(XXX)/support/*.cpp)
+INCLUDE_DIRS += $(LIBS_DIR)
 
 # CMSIS
-INCLUDE_DIRS += $(CMSIS)/Include
-LIBRARY_DIRS += $(CMSIS)/Lib/GCC
+INCLUDE_DIRS += $(LIBS_DIR)/CMSIS/CMSIS/Include
+LIBRARY_DIRS += $(LIBS_DIR)/CMSIS/CMSIS/Lib/GCC
 
 # CMSIS device
-INCLUDE_DIRS += $(DEVICE)/Include
-SOURCE_FILES += $(shell find $(DEVICE) -regextype sed -iregex ".*/*\.[cs]")
+INCLUDE_DIRS += $(PROJECT_DIR)/$(DEVICE)/Include
 
 # HAL driver
-INCLUDE_DIRS += $(DRIVER)/Inc
-SOURCE_FILES += $(shell find $(DRIVER) -regextype sed -iregex ".*/*\.[cs]")
+INCLUDE_DIRS += $(PROJECT_DIR)/$(DRIVER)/Inc
 
 # FreeRTOS
-INCLUDE_DIRS += $(FREERTOS)/CMSIS_RTOS
-INCLUDE_DIRS += $(FREERTOS)/include
-INCLUDE_DIRS += $(FREERTOS)/portable/GCC/ARM_CM4F
-SOURCE_FILES += $(shell find $(FREERTOS) -regextype sed -iregex ".*/*\.[cs]")
+INCLUDE_DIRS += $(PROJECT_DIR)/$(FREERTOS)/CMSIS_RTOS
+INCLUDE_DIRS += $(PROJECT_DIR)/$(FREERTOS)/include
+INCLUDE_DIRS += $(PROJECT_DIR)/$(FREERTOS)/portable/GCC/ARM_CM4F
 
 # STM32CubeMX auto generated code
 INCLUDE_DIRS += Inc
-SOURCE_FILES += $(shell find ./Src -regextype sed -iregex ".*/*\.[cs]")
 
 # Project/Application
 INCLUDE_DIRS += App
-SOURCE_FILES += $(shell find ./App -regextype sed -iregex ".*/*\.cpp")
+
+# ----- Source files ----------------------------------------------------------
+
+# Add whole xXx library
+SOURCE_FILES += $(shell find $(LIBS_DIR)/xXx -iregex ".*\.\(c\|cpp\|s\)")
+
+# Add all supported source files in project folder
+SOURCE_FILES += $(shell find $(PROJECT_DIR) -iregex ".*\.\(c\|cpp\|s\)")
 
 # ----- Libraries -------------------------------------------------------------
 
