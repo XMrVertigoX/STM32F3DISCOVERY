@@ -13,7 +13,7 @@ DRIVER   = Drivers/STM32F3xx_HAL_Driver
 FREERTOS = Middlewares/Third_Party/FreeRTOS/Source
 
 #  Files
-LINKER_SCRIPT = TrueSTUDIO/blink2/STM32F303VC_FLASH.ld
+LINKER_SCRIPT = TrueSTUDIO/uart/STM32F303VC_FLASH.ld
 
 # ----- Symbols ---------------------------------------------------------------
 
@@ -34,10 +34,13 @@ INCLUDE_DIRS += $(PROJECT_DIR)/$(DEVICE)/Include
 # HAL driver
 INCLUDE_DIRS += $(PROJECT_DIR)/$(DRIVER)/Inc
 
-# FreeRTOS
+# Middlewares
 INCLUDE_DIRS += $(PROJECT_DIR)/$(FREERTOS)/CMSIS_RTOS
 INCLUDE_DIRS += $(PROJECT_DIR)/$(FREERTOS)/include
 INCLUDE_DIRS += $(PROJECT_DIR)/$(FREERTOS)/portable/GCC/ARM_CM4F
+INCLUDE_DIRS += $(PROJECT_DIR)/Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc
+INCLUDE_DIRS += $(PROJECT_DIR)/Middlewares/ST/STM32_USB_Device_Library/Core/Inc
+
 
 # STM32CubeMX auto generated code
 INCLUDE_DIRS += Inc

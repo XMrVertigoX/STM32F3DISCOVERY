@@ -1,8 +1,8 @@
 /**
   ******************************************************************************
-  * File Name          : dma.h
-  * Description        : This file contains all the function prototypes for
-  *                      the dma.c file
+  * @file           : USB_DEVICE
+  * @version        : v1.0_Cube
+  * @brief          : Header for usb_device file.
   ******************************************************************************
   *
   * Copyright (c) 2016 STMicroelectronics International N.V. 
@@ -40,41 +40,32 @@
   * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   *
   ******************************************************************************
-  */
+*/
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __dma_H
-#define __dma_H
-
+#ifndef __usb_device_H
+#define __usb_device_H
 #ifdef __cplusplus
  extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
+#include "stm32f3xx.h"
 #include "stm32f3xx_hal.h"
-#include "main.h"
+#include "usbd_def.h"
 
-/* DMA memory to memory transfer handles -------------------------------------*/
-extern void Error_Handler(void);
+extern USBD_HandleTypeDef hUsbDeviceFS;
 
-/* USER CODE BEGIN Includes */
-
-/* USER CODE END Includes */
-
-/* USER CODE BEGIN Private defines */
-
-/* USER CODE END Private defines */
-
-void MX_DMA_Init(void);
-
-/* USER CODE BEGIN Prototypes */
-
-/* USER CODE END Prototypes */
+/* USB_Device init function */	
+void MX_USB_DEVICE_Init(void);
 
 #ifdef __cplusplus
 }
 #endif
+#endif /*__usb_device_H */
 
-#endif /* __dma_H */
+/**
+  * @}
+  */
 
 /**
   * @}
