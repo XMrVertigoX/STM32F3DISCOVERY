@@ -1,19 +1,19 @@
 # ----- Configuration ---------------------------------------------------------
 
-PROJECT_NAME = blink2
+PROJECT_NAME = vcp
 
 # ----- Directories and files -------------------------------------------------
 
 # Directories
 LIBS_DIR    = ../libs
-PROJECT_DIR = .
 
 DEVICE   = Drivers/CMSIS/Device/ST/STM32F3xx
 DRIVER   = Drivers/STM32F3xx_HAL_Driver
 FREERTOS = Middlewares/Third_Party/FreeRTOS/Source
+USB      = Middlewares/ST/STM32_USB_Device_Library
 
 #  Files
-LINKER_SCRIPT = TrueSTUDIO/uart/STM32F303VC_FLASH.ld
+LINKER_SCRIPT = TrueSTUDIO/$(PROJECT_NAME)/STM32F303VC_FLASH.ld
 
 # ----- Symbols ---------------------------------------------------------------
 
@@ -29,17 +29,17 @@ INCLUDE_DIRS += $(LIBS_DIR)/CMSIS/CMSIS/Include
 LIBRARY_DIRS += $(LIBS_DIR)/CMSIS/CMSIS/Lib/GCC
 
 # CMSIS device
-INCLUDE_DIRS += $(PROJECT_DIR)/$(DEVICE)/Include
+INCLUDE_DIRS += $(DEVICE)/Include
 
 # HAL driver
-INCLUDE_DIRS += $(PROJECT_DIR)/$(DRIVER)/Inc
+INCLUDE_DIRS += $(DRIVER)/Inc
 
 # Middlewares
-INCLUDE_DIRS += $(PROJECT_DIR)/$(FREERTOS)/CMSIS_RTOS
-INCLUDE_DIRS += $(PROJECT_DIR)/$(FREERTOS)/include
-INCLUDE_DIRS += $(PROJECT_DIR)/$(FREERTOS)/portable/GCC/ARM_CM4F
-INCLUDE_DIRS += $(PROJECT_DIR)/Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc
-INCLUDE_DIRS += $(PROJECT_DIR)/Middlewares/ST/STM32_USB_Device_Library/Core/Inc
+INCLUDE_DIRS += $(FREERTOS)/CMSIS_RTOS
+INCLUDE_DIRS += $(FREERTOS)/include
+INCLUDE_DIRS += $(FREERTOS)/portable/GCC/ARM_CM4F
+INCLUDE_DIRS += $(USB)/Class/CDC/Inc
+INCLUDE_DIRS += $(USB)/Core/Inc
 
 
 # STM32CubeMX auto generated code
@@ -50,11 +50,11 @@ INCLUDE_DIRS += App
 
 # ----- Source files ----------------------------------------------------------
 
+# Add all supported source files in project folder
+SOURCE_FILES += $(shell find . -iregex ".*\.\(c\|cpp\|s\)")
+
 # Add whole xXx library
 SOURCE_FILES += $(shell find $(LIBS_DIR)/xXx -iregex ".*\.\(c\|cpp\|s\)")
-
-# Add all supported source files in project folder
-SOURCE_FILES += $(shell find $(PROJECT_DIR) -iregex ".*\.\(c\|cpp\|s\)")
 
 # ----- Libraries -------------------------------------------------------------
 
