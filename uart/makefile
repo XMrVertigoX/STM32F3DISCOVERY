@@ -47,7 +47,7 @@ INCLUDE_DIRS += App
 
 # ----- Source files ----------------------------------------------------------
 
-# Add whole xXx library
+# xXx library
 SOURCE_FILES += $(wildcard $(LIBS_DIR)/xXx/os/*.cpp)
 SOURCE_FILES += $(wildcard $(LIBS_DIR)/xXx/support/*.cpp)
 SOURCE_FILES += $(wildcard $(LIBS_DIR)/xXx/utils/*.cpp)
