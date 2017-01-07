@@ -1,3 +1,3 @@
-#include "simpletask.hpp"
+#include "radiotask.hpp"
 
-static SimpleTask simpleTask;
+static RadioTask radioTask;
