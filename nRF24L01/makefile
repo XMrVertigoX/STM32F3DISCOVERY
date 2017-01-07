@@ -7,6 +7,7 @@ PROJECT_NAME = nRF24L01
 # Directories
 LIBS_DIR    = ../libs
 
+CMSIS    = Drivers/CMSIS
 DEVICE   = Drivers/CMSIS/Device/ST/STM32F3xx
 DRIVER   = Drivers/STM32F3xx_HAL_Driver
 FREERTOS = Middlewares/Third_Party/FreeRTOS/Source
@@ -17,15 +18,15 @@ LINKER_SCRIPT = TrueSTUDIO/$(PROJECT_NAME)/STM32F303VC_FLASH.ld
 # ----- Symbols ---------------------------------------------------------------
 
 SYMBOLS += STM32F303xC
-SYMBOLS += ARM_MATH_CM4
+# SYMBOLS += ARM_MATH_CM4
 
 # ----- Include directories ---------------------------------------------------
 
 INCLUDE_DIRS += $(LIBS_DIR)
 
 # CMSIS
-INCLUDE_DIRS += $(LIBS_DIR)/CMSIS/CMSIS/Include
-LIBRARY_DIRS += $(LIBS_DIR)/CMSIS/CMSIS/Lib/GCC
+INCLUDE_DIRS += $(CMSIS)/Include
+# LIBRARY_DIRS += $(CMSIS)/Lib/GCC
 
 # CMSIS device
 INCLUDE_DIRS += $(DEVICE)/Include
@@ -47,6 +48,9 @@ INCLUDE_DIRS += Config
 
 # ----- Source files ----------------------------------------------------------
 
+# SEGGER RTT
+SOURCE_FILES += $(wildcard $(LIBS_DIR)/SEGGER_RTT/*.c)
+
 # xXx library
 SOURCE_FILES += $(wildcard $(LIBS_DIR)/xXx/components/wireless/nRF24L01/*.cpp)
 SOURCE_FILES += $(wildcard $(LIBS_DIR)/xXx/os/*.cpp)
@@ -58,7 +62,7 @@ SOURCE_FILES += $(shell find . -iregex ".*\.\(c\|cpp\|s\)")
 
 # ----- Libraries -------------------------------------------------------------
 
-LIBRARIES += arm_cortexM4lf_math
+# LIBRARIES += arm_cortexM4lf_math
 
 # ----- Flags -----------------------------------------------------------------
 
