@@ -8,7 +8,11 @@ Gpio::Gpio(GPIO_TypeDef *port, uint16_t pin) : _port(port), _pin(pin) {}
 
 Gpio::~Gpio() {}
 
-bool Gpio::read() {
+void Gpio::clear() {
+    HAL_GPIO_WritePin(_port, _pin, GPIO_PIN_RESET);
+}
+
+bool Gpio::get() {
     return ((bool)HAL_GPIO_ReadPin(_port, _pin));
 }
 
@@ -16,8 +20,8 @@ void Gpio::toggle() {
     HAL_GPIO_TogglePin(_port, _pin);
 }
 
-void Gpio::write(bool state) {
-    HAL_GPIO_WritePin(_port, _pin, (GPIO_PinState)state);
+void Gpio::set() {
+    HAL_GPIO_WritePin(_port, _pin, GPIO_PIN_SET);
 }
 
 void Gpio::disableInterrupt() {

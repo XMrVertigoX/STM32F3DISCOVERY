@@ -12,9 +12,11 @@ class Gpio : public IGpio {
     Gpio(GPIO_TypeDef *port, uint16_t pin);
     virtual ~Gpio();
 
-    bool read();
+    /* General functionality */
+    void clear();
+    bool get();
+    void set();
     void toggle();
-    void write(bool state);
 
     void disableInterrupt();
     void enableInterrupt(IGpio_Callback_t callback, void *user);

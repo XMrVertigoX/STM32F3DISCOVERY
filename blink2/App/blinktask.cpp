@@ -4,6 +4,8 @@
 #include <xXx/os/arduinotask.hpp>
 
 #include "blinktask.hpp"
+#include "gpio.hpp"
+#include "led.hpp"
 
 using namespace xXx;
 
