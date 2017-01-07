@@ -43,12 +43,12 @@ INCLUDE_DIRS += $(FREERTOS)/portable/GCC/ARM_CM4F
 INCLUDE_DIRS += Inc
 
 # Project/Application
-INCLUDE_DIRS += App
+INCLUDE_DIRS += Config
 
 # ----- Source files ----------------------------------------------------------
 
 # xXx library
-SOURCE_FILES += $(wildcard $(LIBS_DIR)/xXx/components/wireless/RF24/*.cpp)
+SOURCE_FILES += $(wildcard $(LIBS_DIR)/xXx/components/wireless/nRF24L01/*.cpp)
 SOURCE_FILES += $(wildcard $(LIBS_DIR)/xXx/os/*.cpp)
 SOURCE_FILES += $(wildcard $(LIBS_DIR)/xXx/support/*.cpp)
 SOURCE_FILES += $(wildcard $(LIBS_DIR)/xXx/utils/*.cpp)
