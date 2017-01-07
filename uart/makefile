@@ -47,11 +47,13 @@ INCLUDE_DIRS += App
 
 # ----- Source files ----------------------------------------------------------
 
+# Add whole xXx library
+SOURCE_FILES += $(wildcard $(LIBS_DIR)/xXx/os/*.cpp)
+SOURCE_FILES += $(wildcard $(LIBS_DIR)/xXx/support/*.cpp)
+SOURCE_FILES += $(wildcard $(LIBS_DIR)/xXx/utils/*.cpp)
+
 # Add all supported source files in project folder
 SOURCE_FILES += $(shell find . -iregex ".*\.\(c\|cpp\|s\)")
-
-# Add whole xXx library
-SOURCE_FILES += $(shell find $(LIBS_DIR)/xXx -iregex ".*\.\(c\|cpp\|s\)")
 
 # ----- Libraries -------------------------------------------------------------
 
