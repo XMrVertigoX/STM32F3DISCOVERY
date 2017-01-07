@@ -1,11 +1,18 @@
 #ifndef SPI_HPP_
 #define SPI_HPP_
 
+#include <stm32f3xx_hal.h>
+
 #include <xXx/interfaces/ispi.hpp>
+
+#include "gpio.hpp"
 
 namespace xXx {
 
 class Spi : public ISpi {
+  private:
+    Gpio _cs;
+
   public:
     Spi();
     ~Spi();

@@ -51,7 +51,7 @@ INCLUDE_DIRS += Config
 # SEGGER RTT
 SOURCE_FILES += $(wildcard $(LIBS_DIR)/SEGGER_RTT/*.c)
 
-# xXx library
+# xXx
 SOURCE_FILES += $(wildcard $(LIBS_DIR)/xXx/components/wireless/nRF24L01/*.cpp)
 SOURCE_FILES += $(wildcard $(LIBS_DIR)/xXx/os/*.cpp)
 SOURCE_FILES += $(wildcard $(LIBS_DIR)/xXx/support/*.cpp)
