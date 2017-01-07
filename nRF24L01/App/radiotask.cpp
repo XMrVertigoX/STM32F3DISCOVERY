@@ -8,7 +8,8 @@
 
 using namespace xXx;
 
-RadioTask::RadioTask() : ArduinoTask(1024, 1) {}
+RadioTask::RadioTask(nRF24L01 &nRF24L01)
+    : ArduinoTask(1024, 1), _nRF24L01(nRF24L01) {}
 
 RadioTask::~RadioTask() {}
 

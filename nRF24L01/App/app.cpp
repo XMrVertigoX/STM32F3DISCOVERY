@@ -2,8 +2,12 @@
 
 #include "gpio.hpp"
 #include "radiotask.hpp"
+#include "spi.hpp"
 
 static Gpio nRF24L01_CE(GPIOF, GPIO_PIN_2);
 static Gpio nRF24L01_IRQ(GPIOC, GPIO_PIN_2);
+static Spi nRF24L01_Spi;
 
-static RadioTask radioTask;
+static nRF24L01 nRF24L01(nRF24L01_Spi, nRF24L01_CE, nRF24L01_IRQ);
+
+static RadioTask radioTask(nRF24L01);

@@ -4,10 +4,6 @@
 #include <FreeRTOS.h>
 #include <task.h>
 
-#define _BV(x) (1 << (x))
-#define pgm_read_byte(b) (*(b))
-#define pgm_read_word(p) (*(p))
-
 static inline void delayMs(uint32_t ms) {
     // TODO: Find more accurate version
     vTaskDelay(ms / portTICK_PERIOD_MS);
