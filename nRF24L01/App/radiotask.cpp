@@ -9,7 +9,8 @@
 
 using namespace xXx;
 
-static char buffer[] = "Lorem ipsum dolor sit amet, con";
+static char buffer[]    = "Lorem ipsum dolor sit amet, con";
+static uint64_t address = 0xE7E7E7E7E7;
 
 RadioTask::RadioTask(nRF24L01 &nRF24L01)
     : ArduinoTask(1024, 1), _nRF24L01(nRF24L01) {}
@@ -22,7 +23,8 @@ void RadioTask::setup() {
     vTaskDelay(100 / portTICK_PERIOD_MS);
 
     _nRF24L01.init();
-    _nRF24L01.openWritingPipe(0);
+    _nRF24L01.setTxAddress(address);
+    _nRF24L01.setRxAddress(0, address);
 }
 
 void RadioTask::loop() {
