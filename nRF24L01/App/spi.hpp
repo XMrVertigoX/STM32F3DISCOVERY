@@ -11,10 +11,10 @@ namespace xXx {
 
 class Spi : public ISpi {
   private:
-    Gpio _cs;
+    Gpio &_cs;
 
   public:
-    Spi();
+    Spi(Gpio &cs);
     ~Spi();
 
     uint8_t transmit(uint8_t mosiBytes[], uint8_t misoBytes[], size_t numBytes);

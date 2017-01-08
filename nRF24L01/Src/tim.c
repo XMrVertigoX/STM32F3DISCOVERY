@@ -1,7 +1,8 @@
 /**
   ******************************************************************************
-  * File Name          : main.h
-  * Description        : This file contains the common defines of the application
+  * File Name          : TIM.c
+  * Description        : This file provides code for the configuration
+  *                      of the TIM instances.
   ******************************************************************************
   *
   * Copyright (c) 2017 STMicroelectronics International N.V. 
@@ -40,34 +41,86 @@
   *
   ******************************************************************************
   */
-/* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __MAIN_H
-#define __MAIN_H
-  /* Includes ------------------------------------------------------------------*/
 
-/* USER CODE BEGIN Includes */
+/* Includes ------------------------------------------------------------------*/
+#include "tim.h"
 
-/* USER CODE END Includes */
+/* USER CODE BEGIN 0 */
 
-/* Private define ------------------------------------------------------------*/
+/* USER CODE END 0 */
 
-#define nRF24L01_IRQ_Pin GPIO_PIN_2
-#define nRF24L01_IRQ_GPIO_Port GPIOC
-#define nRF24L01_CE_Pin GPIO_PIN_2
-#define nRF24L01_CE_GPIO_Port GPIOF
-#define SPI2_SS_Pin GPIO_PIN_12
-#define SPI2_SS_GPIO_Port GPIOB
-/* USER CODE BEGIN Private defines */
+TIM_HandleTypeDef htim6;
 
-/* USER CODE END Private defines */
+/* TIM6 init function */
+void MX_TIM6_Init(void)
+{
+  TIM_MasterConfigTypeDef sMasterConfig;
+
+  htim6.Instance = TIM6;
+  htim6.Init.Prescaler = 48;
+  htim6.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim6.Init.Period = 0;
+  if (HAL_TIM_Base_Init(&htim6) != HAL_OK)
+  {
+    Error_Handler();
+  }
+
+  if (HAL_TIM_OnePulse_Init(&htim6, TIM_OPMODE_SINGLE) != HAL_OK)
+  {
+    Error_Handler();
+  }
+
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim6, &sMasterConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+
+}
+
+void HAL_TIM_Base_MspInit(TIM_HandleTypeDef* tim_baseHandle)
+{
+
+  if(tim_baseHandle->Instance==TIM6)
+  {
+  /* USER CODE BEGIN TIM6_MspInit 0 */
+
+  /* USER CODE END TIM6_MspInit 0 */
+    /* Peripheral clock enable */
+    __HAL_RCC_TIM6_CLK_ENABLE();
+  /* USER CODE BEGIN TIM6_MspInit 1 */
+
+  /* USER CODE END TIM6_MspInit 1 */
+  }
+}
+
+void HAL_TIM_Base_MspDeInit(TIM_HandleTypeDef* tim_baseHandle)
+{
+
+  if(tim_baseHandle->Instance==TIM6)
+  {
+  /* USER CODE BEGIN TIM6_MspDeInit 0 */
+
+  /* USER CODE END TIM6_MspDeInit 0 */
+    /* Peripheral clock disable */
+    __HAL_RCC_TIM6_CLK_DISABLE();
+  }
+  /* USER CODE BEGIN TIM6_MspDeInit 1 */
+
+  /* USER CODE END TIM6_MspDeInit 1 */
+} 
+
+/* USER CODE BEGIN 1 */
+
+/* USER CODE END 1 */
 
 /**
   * @}
-  */ 
+  */
 
 /**
   * @}
-*/ 
+  */
 
-#endif /* __MAIN_H */
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

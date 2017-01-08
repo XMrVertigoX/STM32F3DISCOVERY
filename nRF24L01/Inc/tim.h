@@ -1,7 +1,8 @@
 /**
   ******************************************************************************
-  * File Name          : main.h
-  * Description        : This file contains the common defines of the application
+  * File Name          : TIM.h
+  * Description        : This file provides code for the configuration
+  *                      of the TIM instances.
   ******************************************************************************
   *
   * Copyright (c) 2017 STMicroelectronics International N.V. 
@@ -41,33 +42,45 @@
   ******************************************************************************
   */
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __MAIN_H
-#define __MAIN_H
-  /* Includes ------------------------------------------------------------------*/
+#ifndef __tim_H
+#define __tim_H
+#ifdef __cplusplus
+ extern "C" {
+#endif
+
+/* Includes ------------------------------------------------------------------*/
+#include "stm32f3xx_hal.h"
+#include "main.h"
 
 /* USER CODE BEGIN Includes */
 
 /* USER CODE END Includes */
 
-/* Private define ------------------------------------------------------------*/
+extern TIM_HandleTypeDef htim6;
 
-#define nRF24L01_IRQ_Pin GPIO_PIN_2
-#define nRF24L01_IRQ_GPIO_Port GPIOC
-#define nRF24L01_CE_Pin GPIO_PIN_2
-#define nRF24L01_CE_GPIO_Port GPIOF
-#define SPI2_SS_Pin GPIO_PIN_12
-#define SPI2_SS_GPIO_Port GPIOB
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */
 
-/**
-  * @}
-  */ 
+extern void Error_Handler(void);
+
+void MX_TIM6_Init(void);
+
+/* USER CODE BEGIN Prototypes */
+
+/* USER CODE END Prototypes */
+
+#ifdef __cplusplus
+}
+#endif
+#endif /*__ tim_H */
 
 /**
   * @}
-*/ 
+  */
 
-#endif /* __MAIN_H */
+/**
+  * @}
+  */
+
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

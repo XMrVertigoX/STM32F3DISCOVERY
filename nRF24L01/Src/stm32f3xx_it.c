@@ -44,6 +44,8 @@
 extern DMA_HandleTypeDef hdma_spi2_rx;
 extern DMA_HandleTypeDef hdma_spi2_tx;
 
+extern TIM_HandleTypeDef htim7;
+
 /******************************************************************************/
 /*            Cortex-M4 Processor Interruption and Exception Handlers         */ 
 /******************************************************************************/
@@ -56,7 +58,6 @@ void SysTick_Handler(void)
   /* USER CODE BEGIN SysTick_IRQn 0 */
 
   /* USER CODE END SysTick_IRQn 0 */
-  HAL_IncTick();
   osSystickHandler();
   /* USER CODE BEGIN SysTick_IRQn 1 */
 
@@ -124,6 +125,20 @@ void DMA1_Channel5_IRQHandler(void)
   /* USER CODE BEGIN DMA1_Channel5_IRQn 1 */
 
   /* USER CODE END DMA1_Channel5_IRQn 1 */
+}
+
+/**
+* @brief This function handles TIM7 global interrupt.
+*/
+void TIM7_IRQHandler(void)
+{
+  /* USER CODE BEGIN TIM7_IRQn 0 */
+
+  /* USER CODE END TIM7_IRQn 0 */
+  HAL_TIM_IRQHandler(&htim7);
+  /* USER CODE BEGIN TIM7_IRQn 1 */
+
+  /* USER CODE END TIM7_IRQn 1 */
 }
 
 /* USER CODE BEGIN 1 */

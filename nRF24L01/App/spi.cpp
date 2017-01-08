@@ -6,7 +6,7 @@
 
 namespace xXx {
 
-Spi::Spi() : _cs(Gpio(GPIOB, GPIO_PIN_12)) {}
+Spi::Spi(Gpio &cs) : _cs(cs) {}
 
 Spi::~Spi() {}
 
