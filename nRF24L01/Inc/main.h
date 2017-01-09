@@ -51,12 +51,18 @@
 
 /* Private define ------------------------------------------------------------*/
 
-#define nRF24L01_IRQ_Pin GPIO_PIN_2
-#define nRF24L01_IRQ_GPIO_Port GPIOC
-#define nRF24L01_CE_Pin GPIO_PIN_2
-#define nRF24L01_CE_GPIO_Port GPIOF
-#define SPI2_SS_Pin GPIO_PIN_12
-#define SPI2_SS_GPIO_Port GPIOB
+#define nRF24L01_1_IRQ_Pin GPIO_PIN_2
+#define nRF24L01_1_IRQ_GPIO_Port GPIOC
+#define nRF24L01_1_CE_Pin GPIO_PIN_2
+#define nRF24L01_1_CE_GPIO_Port GPIOF
+#define nRF24L01_2_IRQ_Pin GPIO_PIN_11
+#define nRF24L01_2_IRQ_GPIO_Port GPIOB
+#define nRF24L01_1_SS_Pin GPIO_PIN_12
+#define nRF24L01_1_SS_GPIO_Port GPIOB
+#define nRF24L01_2_CE_Pin GPIO_PIN_13
+#define nRF24L01_2_CE_GPIO_Port GPIOD
+#define nRF24L01_2_SS_Pin GPIO_PIN_15
+#define nRF24L01_2_SS_GPIO_Port GPIOD
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */

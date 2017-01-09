@@ -8,10 +8,11 @@ using namespace xXx;
 
 class RadioTask : public ArduinoTask {
   private:
-    nRF24L01 &_nRF24L01;
+    nRF24L01 &_nRF24L01_1;
+    nRF24L01 &_nRF24L01_2;
 
   public:
-    RadioTask(nRF24L01 &nRF24L01);
+    RadioTask(nRF24L01 &nRF24L01_1, nRF24L01 &nRF24L01_2);
     ~RadioTask();
 
     void loop();

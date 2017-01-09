@@ -12,23 +12,41 @@ using namespace xXx;
 static char buffer[]    = "Lorem ipsum dolor sit amet, con";
 static uint64_t address = 0xE7E7E7E7E7;
 
-RadioTask::RadioTask(nRF24L01 &nRF24L01)
-    : ArduinoTask(1024, 1), _nRF24L01(nRF24L01) {}
+RadioTask::RadioTask(nRF24L01 &nRF24L01_1, nRF24L01 &nRF24L01_2)
+    : ArduinoTask(1024, 1), _nRF24L01_1(nRF24L01_1), _nRF24L01_2(nRF24L01_2) {}
 
 RadioTask::~RadioTask() {}
 
 void RadioTask::setup() {
-    LOG("%s", __PRETTY_FUNCTION__);
-
     vTaskDelay(100 / portTICK_PERIOD_MS);
 
-    _nRF24L01.init();
-    _nRF24L01.setTxAddress(address);
-    _nRF24L01.setRxAddress(0, address);
+    _nRF24L01_1.init();
+    _nRF24L01_2.init();
+
+    _nRF24L01_1.setPowerState(true);
+    _nRF24L01_2.setPowerState(true);
+
+    vTaskDelay(5 / portTICK_PERIOD_MS);
+
+    _nRF24L01_1.setTxAddress(address);
+    _nRF24L01_1.setRxAddress(0, address);
+    _nRF24L01_1.setCRCConfig(RF24_CRC_8);
+    _nRF24L01_1.setChannel(73);
+    _nRF24L01_1.setDataRate(SPEED_1MBPS);
+    _nRF24L01_1.setPowerLevel(RF24_PA_0dBm);
+
+    _nRF24L01_1.startListening();
+
+    _nRF24L01_2.setTxAddress(address);
+    _nRF24L01_2.setRxAddress(0, address);
+    _nRF24L01_2.setCRCConfig(RF24_CRC_8);
+    _nRF24L01_2.setChannel(73);
+    _nRF24L01_2.setDataRate(SPEED_1MBPS);
+    _nRF24L01_2.setPowerLevel(RF24_PA_0dBm);
 }
 
 void RadioTask::loop() {
-    _nRF24L01.startWrite((uint8_t *)buffer, sizeof(buffer));
-
     vTaskDelay(1000 / portTICK_PERIOD_MS);
+
+    _nRF24L01_2.startWrite((uint8_t *)buffer, sizeof(buffer));
 }

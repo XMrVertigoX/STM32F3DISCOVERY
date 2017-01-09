@@ -50,6 +50,7 @@ void EXTI0_IRQHandler(void);
 void EXTI2_TSC_IRQHandler(void);
 void DMA1_Channel4_IRQHandler(void);
 void DMA1_Channel5_IRQHandler(void);
+void EXTI15_10_IRQHandler(void);
 void TIM7_IRQHandler(void);
 
 #ifdef __cplusplus

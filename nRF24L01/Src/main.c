@@ -46,7 +46,6 @@
 #include "cmsis_os.h"
 #include "dma.h"
 #include "spi.h"
-#include "tim.h"
 #include "gpio.h"
 
 /* USER CODE BEGIN Includes */
@@ -93,7 +92,6 @@ int main(void)
   MX_GPIO_Init();
   MX_DMA_Init();
   MX_SPI2_Init();
-  MX_TIM6_Init();
 
   /* USER CODE BEGIN 2 */
 
