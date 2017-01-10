@@ -17,6 +17,7 @@ LINKER_SCRIPT = TrueSTUDIO/$(PROJECT_NAME)/STM32F303VC_FLASH.ld
 
 # ----- Symbols ---------------------------------------------------------------
 
+# SYMBOLS += NDEBUG
 SYMBOLS += STM32F303xC
 # SYMBOLS += ARM_MATH_CM4
 
