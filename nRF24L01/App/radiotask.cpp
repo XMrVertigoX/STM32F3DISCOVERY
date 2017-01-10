@@ -25,6 +25,8 @@ void RadioTask::setup() {
     _nRF24L01_1.powerUp();
     _nRF24L01_2.powerUp();
 
+    vTaskDelay(5 / portTICK_PERIOD_MS);
+
     _nRF24L01_1.configureTxPipe();
     _nRF24L01_2.configureRxPipe(0);
 
@@ -33,5 +35,5 @@ void RadioTask::setup() {
 
 void RadioTask::loop() {
     _nRF24L01_1.startWrite((uint8_t *)buffer, sizeof(buffer));
-    vTaskDelay(1000);
+    vTaskDelay(1000 / portTICK_PERIOD_MS);
 }
