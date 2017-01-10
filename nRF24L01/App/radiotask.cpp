@@ -11,7 +11,7 @@ using namespace xXx;
 
 static char buffer[] = "Lorem ipsum dolor sit amet, con";
 
-RadioTask::RadioTask(nRF24L01 &nRF24L01_1, nRF24L01 &nRF24L01_2)
+RadioTask::RadioTask(nRF24L01P &nRF24L01_1, nRF24L01P &nRF24L01_2)
     : ArduinoTask(1024, 1), _nRF24L01_1(nRF24L01_1), _nRF24L01_2(nRF24L01_2) {}
 
 RadioTask::~RadioTask() {}
@@ -22,11 +22,13 @@ void RadioTask::setup() {
     _nRF24L01_1.init();
     _nRF24L01_2.init();
 
-    _nRF24L01_1.setPowerState(true);
-    _nRF24L01_2.setPowerState(true);
+    _nRF24L01_1.powerUp();
+    _nRF24L01_2.powerUp();
 
-    _nRF24L01_2.enterRxMode();
-    _nRF24L01_1.startWrite((uint8_t *)buffer, sizeof(buffer));
+    _nRF24L01_1.configureTxPipe();
+    _nRF24L01_2.configureRxPipe(0);
+
+    _nRF24L01_2.startListening();
 }
 
 void RadioTask::loop() {
