@@ -11,6 +11,9 @@ class RadioTask : public ArduinoTask {
     nRF24L01P &_nRF24L01_1;
     nRF24L01P &_nRF24L01_2;
 
+    Queue<uint8_t> _txQueue;
+    Queue<uint8_t> _rxQueue0;
+
   public:
     RadioTask(nRF24L01P &nRF24L01_1, nRF24L01P &nRF24L01_2);
     ~RadioTask();
