@@ -30,10 +30,17 @@ void RadioTask::setup() {
     _nRF24L01_1.configureTxPipe();
     _nRF24L01_2.configureRxPipe(0);
 
-    _nRF24L01_2.startListening();
+    _nRF24L01_1.enterTxMode();
+    _nRF24L01_2.enterRxMode();
 }
 
 void RadioTask::loop() {
-    _nRF24L01_1.startWrite((uint8_t *)buffer, sizeof(buffer));
-    vTaskDelay(1000 / portTICK_PERIOD_MS);
+    LOG("StackHighWaterMark: %d", uxTaskGetStackHighWaterMark(_handle));
+
+    _nRF24L01_1.send((uint8_t *)buffer, sizeof(buffer));
+
+    _nRF24L01_1.update();
+    _nRF24L01_2.update();
+
+    vTaskDelay(100 / portTICK_PERIOD_MS);
 }
