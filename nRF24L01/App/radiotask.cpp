@@ -9,7 +9,8 @@
 
 using namespace xXx;
 
-static char buffer[] = "Lorem ipsum dolor sit amet, con";
+static uint8_t buffer[32];
+static uint32_t counter = 0;
 
 RadioTask::RadioTask(nRF24L01P &nRF24L01_1, nRF24L01P &nRF24L01_2)
     : ArduinoTask(1024, 1), _nRF24L01_1(nRF24L01_1), _nRF24L01_2(nRF24L01_2),
@@ -36,12 +37,15 @@ void RadioTask::setup() {
 }
 
 void RadioTask::loop() {
-    LOG("StackHighWaterMark: %d", uxTaskGetStackHighWaterMark(_handle));
+    // LOG("StackHighWaterMark: %d", uxTaskGetStackHighWaterMark(_handle));
 
-    _nRF24L01_1.send((uint8_t *)buffer, sizeof(buffer));
+    uint8_t length = snprintf((char *)buffer, sizeof(buffer), "%d", counter++);
 
-    // _nRF24L01_1.update();
-    // _nRF24L01_2.update();
+    if (_txQueue.freeSlots() >= length) {
+        for (int i = 0; i < length; ++i) {
+            _txQueue.enqueue(buffer[i]);
+        }
+    }
 
     int foo = _rxQueue0.usedSlots();
 
@@ -54,6 +58,9 @@ void RadioTask::loop() {
 
         LOG("%.*s", foo, buffer);
     }
+
+    _nRF24L01_1.update();
+    _nRF24L01_2.update();
 
     vTaskDelay(100 / portTICK_PERIOD_MS);
 }
