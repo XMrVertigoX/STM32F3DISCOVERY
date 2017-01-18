@@ -8,11 +8,9 @@ using namespace xXx;
 
 class RadioTask : public ArduinoTask {
   private:
-    nRF24L01P &_nRF24L01_1;
-    nRF24L01P &_nRF24L01_2;
-
-    Queue<uint8_t> _txQueue;
-    Queue<uint8_t> _rxQueue0;
+    nRF24L01P &_nRF24L01_1, &_nRF24L01_2;
+    Queue<uint8_t> _txQueue1, _txQueue2;
+    Queue<uint8_t> _rxQueue1, _rxQueue2;
 
   public:
     RadioTask(nRF24L01P &nRF24L01_1, nRF24L01P &nRF24L01_2);
