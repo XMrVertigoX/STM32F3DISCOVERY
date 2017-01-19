@@ -17,7 +17,8 @@ static union {
     uint8_t counter_8[4];
 } counter_out;
 
-RadioTask::RadioTask(nRF24L01P &nRF24L01_1, nRF24L01P &nRF24L01_2)
+RadioTask::RadioTask(nRF24L01P_ShockBurst &nRF24L01_1,
+                     nRF24L01P_ShockBurst &nRF24L01_2)
     : ArduinoTask(1024, 1), _nRF24L01_1(nRF24L01_1), _nRF24L01_2(nRF24L01_2),
       _txQueue1{Queue<uint8_t>(256)}, _txQueue2{Queue<uint8_t>(256)},
       _rxQueue1{Queue<uint8_t>(256)}, _rxQueue2{Queue<uint8_t>(256)} {}
