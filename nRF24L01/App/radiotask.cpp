@@ -11,14 +11,10 @@ using namespace xXx;
 
 static uint64_t address1 = 0x0F;
 static uint64_t address2 = 0xF0;
+static uint8_t counter   = 0;
+static uint8_t lastItem  = 0;
 
-static union {
-    uint32_t counter_32 = 0;
-    uint8_t counter_8[4];
-} counter_out;
-
-RadioTask::RadioTask(nRF24L01P_ShockBurst &nRF24L01_1,
-                     nRF24L01P_ShockBurst &nRF24L01_2)
+RadioTask::RadioTask(nRF24L01P_API &nRF24L01_1, nRF24L01P_API &nRF24L01_2)
     : ArduinoTask(1024, 1), _nRF24L01_1(nRF24L01_1), _nRF24L01_2(nRF24L01_2),
       _txQueue1{Queue<uint8_t>(256)}, _txQueue2{Queue<uint8_t>(256)},
       _rxQueue1{Queue<uint8_t>(256)}, _rxQueue2{Queue<uint8_t>(256)} {}
@@ -26,6 +22,8 @@ RadioTask::RadioTask(nRF24L01P_ShockBurst &nRF24L01_1,
 RadioTask::~RadioTask() {}
 
 void RadioTask::setup() {
+    LOG("%s", __PRETTY_FUNCTION__);
+
     vTaskDelay(100 / portTICK_PERIOD_MS);
 
     _nRF24L01_1.init();
@@ -46,30 +44,28 @@ void RadioTask::setup() {
 }
 
 void RadioTask::loop() {
-    for (int i = 0; i < sizeof(counter_out) + 1; ++i) {
-        UBaseType_t success = _txQueue1.enqueue(counter_out.counter_8[i]);
-
-        if (!success) {
-            break;
-        }
+    if (_txQueue1.freeSlots()) {
+        _txQueue1.enqueue(counter);
+        counter++;
     }
 
-    UBaseType_t usedSlots = _rxQueue2.usedSlots();
+    if (_rxQueue2.usedSlots()) {
+        UBaseType_t numBytes = _rxQueue2.usedSlots();
+        uint8_t tmp;
 
-    uint8_t counter_in[4];
+        for (int i = 0; i < numBytes; ++i) {
+            _rxQueue2.dequeue(tmp);
 
-    if (usedSlots) {
-        for (int i = 0; i < usedSlots; ++i) {
-            _rxQueue2.dequeue(counter_in[i]);
+            if (lastItem < 0xFF && tmp != (lastItem + 1)) {
+                LOG("%d <=> %d", lastItem, tmp);
+            }
+
+            lastItem = tmp;
         }
-
-        BUFFER("counter_in", counter_in, 4);
     }
-
-    counter_out.counter_32++;
 
     _nRF24L01_1.update();
     _nRF24L01_2.update();
 
-    vTaskDelay(100 / portTICK_PERIOD_MS);
+    vTaskDelay(1 / portTICK_PERIOD_MS);
 }
