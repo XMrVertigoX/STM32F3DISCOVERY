@@ -9,9 +9,13 @@
 
 using namespace xXx;
 
-static uint8_t buffer[32];
 static uint64_t address1 = 0x0F;
 static uint64_t address2 = 0xF0;
+
+static union {
+    uint32_t counter_32 = 0;
+    uint8_t counter_8[4];
+} counter_out;
 
 RadioTask::RadioTask(nRF24L01P &nRF24L01_1, nRF24L01P &nRF24L01_2)
     : ArduinoTask(1024, 1), _nRF24L01_1(nRF24L01_1), _nRF24L01_2(nRF24L01_2),
@@ -24,32 +28,25 @@ void RadioTask::setup() {
     vTaskDelay(100 / portTICK_PERIOD_MS);
 
     _nRF24L01_1.init();
-    _nRF24L01_1.powerUp();
+    _nRF24L01_1.switchOperatingMode(OperatingMode_t::Standby);
 
     _nRF24L01_2.init();
-    _nRF24L01_2.powerUp();
+    _nRF24L01_2.switchOperatingMode(OperatingMode_t::Standby);
 
     vTaskDelay(5 / portTICK_PERIOD_MS);
 
     _nRF24L01_1.configureTxPipe(_txQueue1, address1);
     _nRF24L01_1.configureRxPipe(1, _rxQueue1, address2);
+    _nRF24L01_1.switchOperatingMode(OperatingMode_t::Tx);
 
     _nRF24L01_2.configureTxPipe(_txQueue2, address2);
     _nRF24L01_2.configureRxPipe(1, _rxQueue2, address1);
-
-    _nRF24L01_1.enterTxMode();
-
-    _nRF24L01_2.enterRxMode();
+    _nRF24L01_2.switchOperatingMode(OperatingMode_t::Rx);
 }
 
 void RadioTask::loop() {
-    LOG("StackHighWaterMark: %d", uxTaskGetStackHighWaterMark(_handle));
-
-    uint8_t length = snprintf(reinterpret_cast<char *>(buffer), sizeof(buffer),
-                              "%ld", xTaskGetTickCount());
-
-    for (int i = 0; i < length + 1; ++i) {
-        UBaseType_t success = _txQueue1.enqueue(buffer[i]);
+    for (int i = 0; i < sizeof(counter_out) + 1; ++i) {
+        UBaseType_t success = _txQueue1.enqueue(counter_out.counter_8[i]);
 
         if (!success) {
             break;
@@ -58,15 +55,17 @@ void RadioTask::loop() {
 
     UBaseType_t usedSlots = _rxQueue2.usedSlots();
 
-    if (usedSlots) {
-        uint8_t buffer[usedSlots];
+    uint8_t counter_in[4];
 
+    if (usedSlots) {
         for (int i = 0; i < usedSlots; ++i) {
-            _rxQueue2.dequeue(buffer[i]);
+            _rxQueue2.dequeue(counter_in[i]);
         }
 
-        LOG("%s", buffer);
+        BUFFER("counter_in", counter_in, 4);
     }
+
+    counter_out.counter_32++;
 
     _nRF24L01_1.update();
     _nRF24L01_2.update();

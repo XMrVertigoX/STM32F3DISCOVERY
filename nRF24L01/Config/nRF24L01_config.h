@@ -55,8 +55,4 @@ static inline void delayUs(uint32_t us) {
     stopTimer();
 }
 
-static inline uint32_t getMillis() {
-    return (xTaskGetTickCount() * portTICK_PERIOD_MS);
-}
-
 #endif // NRF24L01_CONFIG_H_

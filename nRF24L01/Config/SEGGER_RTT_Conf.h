@@ -19,10 +19,10 @@
 #include <FreeRTOSConfig.h>
 
 // Max. number of up-buffers (T->H) available on this target (Default: 2)
-#define SEGGER_RTT_MAX_NUM_UP_BUFFERS (2)
+#define SEGGER_RTT_MAX_NUM_UP_BUFFERS (1)
 
 // Max. number of down-buffers (H->T) available on this target (Default: 2)
-#define SEGGER_RTT_MAX_NUM_DOWN_BUFFERS (2)
+#define SEGGER_RTT_MAX_NUM_DOWN_BUFFERS (1)
 
 // Size of the buffer for terminal output of target, up to host (Default: 1k)
 #define BUFFER_SIZE_UP (1024)
