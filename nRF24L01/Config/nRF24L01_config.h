@@ -35,10 +35,6 @@ static inline uint32_t getCycles() {
     return (*DWT_CYCCNT);
 }
 
-static inline void delayMs(uint32_t ms) {
-    vTaskDelay(ms / portTICK_PERIOD_MS);
-}
-
 // TODO: Find more practical version
 static inline void delayUs(uint32_t us) {
     resetTimer();

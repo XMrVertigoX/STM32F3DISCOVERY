@@ -3,8 +3,11 @@
 #include <spi.h>
 
 #include "gpio.hpp"
-#include "radiotask.hpp"
+#include "myTask.hpp"
 #include "spi.hpp"
+
+static Queue<uint8_t> rxQueue(256);
+static Queue<uint8_t> txQueue(256);
 
 static Gpio nRF24L01_1_CE(GPIOD, GPIO_PIN_13);
 static Gpio nRF24L01_1_IRQ(GPIOB, GPIO_PIN_11);
@@ -18,4 +21,4 @@ static Gpio nRF24L01_2_CS(GPIOA, GPIO_PIN_15);
 static Spi nRF24L01_2_SPI(hspi3, nRF24L01_2_CS);
 static nRF24L01P_API nRF24L01_2(nRF24L01_2_SPI, nRF24L01_2_CE, nRF24L01_2_IRQ);
 
-static RadioTask radioTask(nRF24L01_1, nRF24L01_2);
+static MyTask myTask(nRF24L01_1, nRF24L01_2);
