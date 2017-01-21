@@ -1,3 +1,5 @@
+#include <assert.h>
+
 #include <FreeRTOS.h>
 #include <task.h>
 
@@ -15,7 +17,7 @@ static uint8_t counter   = 0;
 static uint8_t lastItem  = 0;
 
 RadioTask::RadioTask(nRF24L01P_API &nRF24L01_1, nRF24L01P_API &nRF24L01_2)
-    : ArduinoTask(1024, 1), _nRF24L01_1(nRF24L01_1), _nRF24L01_2(nRF24L01_2),
+    : ArduinoTask(1024, 2), _nRF24L01_1(nRF24L01_1), _nRF24L01_2(nRF24L01_2),
       _txQueue1{Queue<uint8_t>(256)}, _txQueue2{Queue<uint8_t>(256)},
       _rxQueue1{Queue<uint8_t>(256)}, _rxQueue2{Queue<uint8_t>(256)} {}
 
@@ -41,31 +43,24 @@ void RadioTask::setup() {
     _nRF24L01_2.configureTxPipe(_txQueue2, address2);
     _nRF24L01_2.configureRxPipe(1, _rxQueue2, address1);
     _nRF24L01_2.switchOperatingMode(OperatingMode_t::Rx);
-}
 
-void RadioTask::loop() {
-    if (_txQueue1.freeSlots()) {
+    for (int i = 0; i < _txQueue1.size(); ++i) {
         _txQueue1.enqueue(counter);
         counter++;
     }
+}
 
-    if (_rxQueue2.usedSlots()) {
-        UBaseType_t numBytes = _rxQueue2.usedSlots();
-        uint8_t tmp;
-
-        for (int i = 0; i < numBytes; ++i) {
-            _rxQueue2.dequeue(tmp);
-
-            if (lastItem < 0xFF && tmp != (lastItem + 1)) {
-                LOG("%d <=> %d", lastItem, tmp);
-            }
-
-            lastItem = tmp;
-        }
-    }
-
+void RadioTask::loop() {
     _nRF24L01_1.update();
     _nRF24L01_2.update();
 
-    vTaskDelay(1 / portTICK_PERIOD_MS);
+    UBaseType_t numBytes = _rxQueue2.usedSlots();
+
+    if (numBytes) {
+        uint8_t tmp;
+        _rxQueue2.dequeue(tmp);
+        LOG("%d", tmp);
+        assert(lastItem == tmp);
+        lastItem++;
+    }
 }
