@@ -12,14 +12,13 @@
 using namespace xXx;
 
 MyTask::MyTask(nRF24L01P_API &transmitter, nRF24L01P_API &receiver)
-    : ArduinoTask(1024, 1), _rxQueue(Queue<uint8_t>(255)),
-      _txQueue(Queue<uint8_t>(255)), _transmitter(transmitter),
+    : ArduinoTask(256, 1), _rxQueue(Queue<uint8_t>(256)),
+      _txQueue(Queue<uint8_t>(256)), _transmitter(transmitter),
       _receiver(receiver) {}
 
 MyTask::~MyTask() {}
 
 void MyTask::setup() {
-    LOG("%s", __PRETTY_FUNCTION__);
 
     _transmitter.configureTxPipe(_txQueue);
 
@@ -36,7 +35,7 @@ void MyTask::loop() {
         }
     }
 
-    _transmitter.foo();
+    _transmitter.resume();
 
     size_t usedSlots = _rxQueue.usedSlots();
 
@@ -48,5 +47,5 @@ void MyTask::loop() {
         }
     }
 
-    vTaskDelay(100);
+    vTaskDelay(1000);
 }
