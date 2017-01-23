@@ -19,10 +19,9 @@ MyTask::MyTask(nRF24L01P_API &transmitter, nRF24L01P_API &receiver)
 MyTask::~MyTask() {}
 
 void MyTask::setup() {
+    _transmitter.configureTxPipe(_txQueue, 0xF);
 
-    _transmitter.configureTxPipe(_txQueue);
-
-    _receiver.configureRxPipe(0, _rxQueue);
+    _receiver.configureRxPipe(0, _rxQueue, 0xF);
     _receiver.switchOperatingMode(OperatingMode_t::Rx);
 }
 
@@ -35,7 +34,7 @@ void MyTask::loop() {
         }
     }
 
-    _transmitter.resume();
+    _transmitter.send();
 
     size_t usedSlots = _rxQueue.usedSlots();
 
@@ -47,5 +46,5 @@ void MyTask::loop() {
         }
     }
 
-    vTaskDelay(1000);
+    vTaskDelay(100);
 }

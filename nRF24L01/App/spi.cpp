@@ -3,6 +3,7 @@
 #include <stm32f3xx_hal.h>
 
 #include <FreeRTOS.h>
+#include <semphr.h>
 #include <task.h>
 
 #include <spi.h>
@@ -20,8 +21,6 @@ Spi::~Spi() {}
 
 uint8_t Spi::transmit(uint8_t mosiBytes[], uint8_t misoBytes[],
                       size_t numBytes) {
-    portENTER_CRITICAL();
-
     _cs.clear();
 
     // TODO: Magic timeout number: Timeout after 1000 ms. Why? I don't know...
@@ -32,10 +31,10 @@ uint8_t Spi::transmit(uint8_t mosiBytes[], uint8_t misoBytes[],
 
     _cs.set();
 
-    portEXIT_CRITICAL();
-
     // TODO: Return actual status
     return (0);
 }
+
+void HAL_SPI_TxRxCpltCallback(SPI_HandleTypeDef *hspi) {}
 
 } /* namespace xXx */
