@@ -48,6 +48,6 @@ void Gpio::callback(uint16_t pin) {
     }
 }
 
-void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
+extern "C" void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
     Gpio::callback(GPIO_Pin);
 }

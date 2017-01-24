@@ -46,5 +46,5 @@ void MyTask::loop() {
         }
     }
 
-    vTaskDelay(100);
+    vTaskDelay(1000);
 }

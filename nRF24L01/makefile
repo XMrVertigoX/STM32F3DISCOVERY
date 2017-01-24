@@ -1,6 +1,6 @@
 # ----- Configuration ---------------------------------------------------------
 
-PROJECT_NAME = nrf24l01p
+PROJECT_NAME = nRF24L01
 
 # ----- Directories and files -------------------------------------------------
 
