@@ -34,7 +34,9 @@ void MyTask::loop() {
         }
     }
 
-    _transmitter.send();
+    if (_txQueue.usedSlots()) {
+        _transmitter.notify();
+    }
 
     size_t usedSlots = _rxQueue.usedSlots();
 

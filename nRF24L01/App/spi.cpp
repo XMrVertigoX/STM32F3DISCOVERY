@@ -27,8 +27,16 @@ Spi::Spi(SPI_HandleTypeDef &hspi, Gpio &cs) : _hspi(&hspi) {
 
 Spi::~Spi() {}
 
-uint8_t Spi::transmit(uint8_t mosiBytes[], uint8_t misoBytes[],
-                      size_t numBytes) {
+uint8_t Spi::transmit(uint8_t mosiBytes[], size_t numBytes) {
+    return (1);
+}
+
+uint8_t Spi::receive(uint8_t misoBytes[], size_t numBytes) {
+    return (1);
+}
+
+uint8_t Spi::transmit_receive(uint8_t mosiBytes[], uint8_t misoBytes[],
+                              size_t numBytes) {
     if (_hspi == &hspi2) {
         _foo[0]->clear();
     } else if (_hspi == &hspi3) {
@@ -60,6 +68,10 @@ void Spi::irq(SPI_HandleTypeDef *hspi) {
         _foo[1]->set();
     }
 }
+
+extern "C" void HAL_SPI_TxCpltCallback(SPI_HandleTypeDef *hspi) {}
+
+extern "C" void HAL_SPI_RxCpltCallback(SPI_HandleTypeDef *hspi) {}
 
 extern "C" void HAL_SPI_TxRxCpltCallback(SPI_HandleTypeDef *hspi) {
     Spi::irq(hspi);
