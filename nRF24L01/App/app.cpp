@@ -6,9 +6,6 @@
 #include "myTask.hpp"
 #include "spi.hpp"
 
-static Queue<uint8_t> rxQueue(256);
-static Queue<uint8_t> txQueue(256);
-
 static Gpio nRF24L01_1_CE(GPIOD, GPIO_PIN_13);
 static Gpio nRF24L01_1_IRQ(GPIOB, GPIO_PIN_11);
 static Gpio nRF24L01_1_CSN(GPIOD, GPIO_PIN_15);
