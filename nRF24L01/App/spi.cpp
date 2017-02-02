@@ -15,14 +15,12 @@
 #include "gpio.hpp"
 #include "spi.hpp"
 
-static uint32_t spiTimeout = 10;
+static uint32_t spiTimeout = 1000;
 
 namespace xXx {
 
 Gpio *Spi::_cs[2];
 SemaphoreHandle_t Spi::_semaphore;
-ISpi_Callback_t Spi::_callback[2];
-void *Spi::_user[2];
 
 Spi::Spi(SPI_HandleTypeDef &hspi, Gpio &cs) : _hspi(&hspi) {
     if (_hspi == &hspi2) {
@@ -44,18 +42,12 @@ uint8_t Spi::receive(uint8_t misoBytes[], size_t numBytes) {
     return (1);
 }
 
-uint8_t Spi::transmit_receive(Queue<uint8_t> &mosiQueue,
-                              Queue<uint8_t> &misoQueue, ISpi_Callback_t cb,
-                              void *user) {
+uint8_t Spi::transmit_receive(Queue<uint8_t> &mosiQueue, Queue<uint8_t> &misoQueue) {
     xSemaphoreTake(_semaphore, portMAX_DELAY);
 
     if (_hspi == &hspi2) {
-        _callback[0] = cb;
-        _user[0]     = user;
         _cs[0]->clear();
     } else if (_hspi == &hspi3) {
-        _callback[1] = cb;
-        _user[1]     = user;
         _cs[1]->clear();
     }
 
@@ -68,8 +60,8 @@ uint8_t Spi::transmit_receive(Queue<uint8_t> &mosiQueue,
         mosiQueue.dequeue(mosiBytes[i]);
     }
 
-    HAL_StatusTypeDef status = HAL_SPI_TransmitReceive(
-        _hspi, mosiBytes, misoBytes, numBytes, spiTimeout);
+    HAL_StatusTypeDef status =
+        HAL_SPI_TransmitReceive(_hspi, mosiBytes, misoBytes, numBytes, spiTimeout);
 
     assert(status == HAL_OK);
 
@@ -78,16 +70,8 @@ uint8_t Spi::transmit_receive(Queue<uint8_t> &mosiQueue,
     }
 
     if (_hspi == &hspi2) {
-        if (_callback[0]) {
-            _callback[0](_user[0]);
-        }
-
         _cs[0]->set();
     } else if (_hspi == &hspi3) {
-        if (_callback[1]) {
-            _callback[1](_user[1]);
-        }
-
         _cs[1]->set();
     }
 
@@ -95,6 +79,14 @@ uint8_t Spi::transmit_receive(Queue<uint8_t> &mosiQueue,
 
     // TODO: Return actual status
     return (0);
+}
+
+void Spi::irq(SPI_HandleTypeDef *hspi) {
+    LOG("IRQ");
+}
+
+void HAL_SPI_TxRxCpltCallback(SPI_HandleTypeDef *hspi) {
+    Spi::irq(hspi);
 }
 
 } /* namespace xXx */
