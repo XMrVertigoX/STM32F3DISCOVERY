@@ -12,41 +12,34 @@
 using namespace xXx;
 
 MyTask::MyTask(nRF24L01P_API &transmitter, nRF24L01P_API &receiver)
-    : ArduinoTask(256, 1), _rxQueue(Queue<uint8_t>(256)),
-      _txQueue(Queue<uint8_t>(256)), _transmitter(transmitter),
-      _receiver(receiver) {}
+    : ArduinoTask(256, 1), _rxQueue(Queue<uint8_t>(256)), _txQueue(Queue<uint8_t>(128)),
+      _transmitter(transmitter), _receiver(receiver) {}
 
 MyTask::~MyTask() {}
 
 void MyTask::setup() {
-    _transmitter.configureTxPipe(_txQueue, 0xF);
-
     _receiver.configureRxPipe(0, _rxQueue, 0xF);
+    _receiver.setCrcConfig(Crc_t::CRC16);
+    _receiver.setDataRate(DataRate_t::DataRate_1MBPS);
     _receiver.switchOperatingMode(OperatingMode_t::Rx);
+
+    _transmitter.configureTxPipe(0xF);
+    _transmitter.setCrcConfig(Crc_t::CRC16);
+    _transmitter.setDataRate(DataRate_t::DataRate_1MBPS);
+    _transmitter.setRetries(0xF, 0xF);
+    _transmitter.switchOperatingMode(OperatingMode_t::Tx);
+
+    uint8_t i = 0;
+    while (_txQueue.freeSlots()) {
+        _txQueue.enqueue(i);
+        i++;
+    }
 }
 
 void MyTask::loop() {
-    for (uint8_t i = 0; i < 255; ++i) {
-        BaseType_t success = _txQueue.enqueue(i);
+    _transmitter.send(_txQueue);
 
-        if (success != pdTRUE) {
-            break;
-        }
-    }
-
-    if (_txQueue.usedSlots()) {
-        _transmitter.notify();
-    }
-
-    size_t usedSlots = _rxQueue.usedSlots();
-
-    if (usedSlots) {
-        for (int i = 0; i < usedSlots; ++i) {
-            uint8_t tmp;
-            _rxQueue.dequeue(tmp);
-            LOG("%d", tmp);
-        }
-    }
-
-    vTaskDelay(1000);
+    uint8_t tmp;
+    _rxQueue.dequeue(tmp);
+    LOG("%d", tmp);
 }

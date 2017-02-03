@@ -20,6 +20,7 @@ class Spi : public ISpi {
 
     static Gpio *_cs[];
     static SemaphoreHandle_t _semaphore;
+    static SemaphoreHandle_t _semaphore2;
 
   public:
     Spi(SPI_HandleTypeDef &hspi, Gpio &cs);

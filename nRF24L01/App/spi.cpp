@@ -34,14 +34,6 @@ Spi::Spi(SPI_HandleTypeDef &hspi, Gpio &cs) : _hspi(&hspi) {
 
 Spi::~Spi() {}
 
-uint8_t Spi::transmit(uint8_t mosiBytes[], size_t numBytes) {
-    return (1);
-}
-
-uint8_t Spi::receive(uint8_t misoBytes[], size_t numBytes) {
-    return (1);
-}
-
 uint8_t Spi::transmit_receive(Queue<uint8_t> &mosiQueue, Queue<uint8_t> &misoQueue) {
     xSemaphoreTake(_semaphore, portMAX_DELAY);
 
@@ -60,10 +52,12 @@ uint8_t Spi::transmit_receive(Queue<uint8_t> &mosiQueue, Queue<uint8_t> &misoQue
         mosiQueue.dequeue(mosiBytes[i]);
     }
 
-    HAL_StatusTypeDef status =
-        HAL_SPI_TransmitReceive(_hspi, mosiBytes, misoBytes, numBytes, spiTimeout);
+    HAL_SPI_TransmitReceive_DMA(_hspi, mosiBytes, misoBytes, numBytes);
 
-    assert(status == HAL_OK);
+    // TODO: Handle via interrupt
+    while (HAL_SPI_GetState(_hspi) != HAL_SPI_STATE_READY) {
+        __NOP();
+    }
 
     for (int i = 0; i < numBytes; ++i) {
         misoQueue.enqueue(misoBytes[i]);
@@ -81,11 +75,9 @@ uint8_t Spi::transmit_receive(Queue<uint8_t> &mosiQueue, Queue<uint8_t> &misoQue
     return (0);
 }
 
-void Spi::irq(SPI_HandleTypeDef *hspi) {
-    LOG("IRQ");
-}
+void Spi::irq(SPI_HandleTypeDef *hspi) {}
 
-void HAL_SPI_TxRxCpltCallback(SPI_HandleTypeDef *hspi) {
+extern "C" void HAL_SPI_TxRxCpltCallback(SPI_HandleTypeDef *hspi) {
     Spi::irq(hspi);
 }
 
