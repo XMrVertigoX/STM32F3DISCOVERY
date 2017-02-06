@@ -17,17 +17,14 @@ namespace xXx {
 class Spi : public ISpi {
   private:
     SPI_HandleTypeDef *_hspi;
+    Gpio &_cs;
 
-    static Gpio *_cs[];
-    static SemaphoreHandle_t _semaphore;
-    static SemaphoreHandle_t _semaphore2;
+    static SemaphoreHandle_t _semaphore[2];
 
   public:
     Spi(SPI_HandleTypeDef &hspi, Gpio &cs);
     ~Spi();
 
-    uint8_t transmit(uint8_t mosiBytes[], size_t numBytes);
-    uint8_t receive(uint8_t misoBytes[], size_t numBytes);
     uint8_t transmit_receive(Queue<uint8_t> &mosiQueue, Queue<uint8_t> &misoQueue);
 
     static void irq(SPI_HandleTypeDef *hspi);

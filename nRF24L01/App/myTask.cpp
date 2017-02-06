@@ -23,10 +23,9 @@ void MyTask::setup() {
     _receiver.setDataRate(DataRate_t::DataRate_1MBPS);
     _receiver.switchOperatingMode(OperatingMode_t::Rx);
 
-    _transmitter.configureTxPipe(0xF);
+    _transmitter.configureTxPipe(_txQueue, 0xF);
     _transmitter.setCrcConfig(Crc_t::CRC16);
     _transmitter.setDataRate(DataRate_t::DataRate_1MBPS);
-    _transmitter.setRetries(0xF, 0xF);
     _transmitter.switchOperatingMode(OperatingMode_t::Tx);
 
     uint8_t i = 0;
@@ -37,8 +36,6 @@ void MyTask::setup() {
 }
 
 void MyTask::loop() {
-    _transmitter.send(_txQueue);
-
     uint8_t tmp;
     _rxQueue.dequeue(tmp);
     LOG("%d", tmp);
