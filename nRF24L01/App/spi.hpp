@@ -25,7 +25,7 @@ class Spi : public ISpi {
     Spi(SPI_HandleTypeDef &hspi, Gpio &cs);
     ~Spi();
 
-    uint8_t transmit_receive(Queue<uint8_t> &mosiQueue, Queue<uint8_t> &misoQueue);
+    uint8_t transmit_receive(Queue<uint8_t> &queue);
 
     static void irq(SPI_HandleTypeDef *hspi);
 };

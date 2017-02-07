@@ -32,7 +32,7 @@ Spi::Spi(SPI_HandleTypeDef &hspi, Gpio &cs) : _hspi(&hspi), _cs(cs) {
 
 Spi::~Spi() {}
 
-uint8_t Spi::transmit_receive(Queue<uint8_t> &mosiQueue, Queue<uint8_t> &misoQueue) {
+uint8_t Spi::transmit_receive(Queue<uint8_t> &queue) {
     uint8_t numBytes;
     BaseType_t semaphoreTaken;
     HAL_StatusTypeDef spiStatus;
@@ -45,13 +45,13 @@ uint8_t Spi::transmit_receive(Queue<uint8_t> &mosiQueue, Queue<uint8_t> &misoQue
 
     _cs.clear();
 
-    numBytes = mosiQueue.usedSlots();
+    numBytes = queue.usedSlots();
 
     uint8_t mosiBytes[numBytes];
     uint8_t misoBytes[numBytes];
 
     for (int i = 0; i < numBytes; ++i) {
-        mosiQueue.dequeue(mosiBytes[i]);
+        queue.dequeue(mosiBytes[i]);
     }
 
     spiStatus = HAL_SPI_TransmitReceive_DMA(_hspi, mosiBytes, misoBytes, numBytes);
@@ -63,7 +63,7 @@ uint8_t Spi::transmit_receive(Queue<uint8_t> &mosiQueue, Queue<uint8_t> &misoQue
     }
 
     for (int i = 0; i < numBytes; ++i) {
-        misoQueue.enqueue(misoBytes[i]);
+        queue.enqueue(misoBytes[i]);
     }
 
     _cs.set();
