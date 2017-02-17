@@ -81,6 +81,10 @@ void Spi::irq(SPI_HandleTypeDef *hspi) {
     portYIELD_FROM_ISR(higherPriorityTaskWoken);
 }
 
+extern "C" void HAL_SPI_ErrorCallback(SPI_HandleTypeDef *hspi) {
+    LOG("HAL_SPI_ErrorCallback");
+}
+
 extern "C" void HAL_SPI_TxRxCpltCallback(SPI_HandleTypeDef *hspi) {
     Spi::irq(hspi);
 }
