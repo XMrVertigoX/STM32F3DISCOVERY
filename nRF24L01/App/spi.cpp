@@ -43,9 +43,7 @@ uint8_t Spi::transmit_receive(Queue<uint8_t> &queue) {
         return (EXIT_FAILURE);
     }
 
-    _cs.clear();
-
-    numBytes = queue.usedSlots();
+    numBytes = queue.queueMessagesWaiting();
 
     uint8_t mosiBytes[numBytes];
     uint8_t misoBytes[numBytes];
@@ -54,9 +52,14 @@ uint8_t Spi::transmit_receive(Queue<uint8_t> &queue) {
         queue.dequeue(mosiBytes[i]);
     }
 
+    _cs.clear();
+
     spiStatus = HAL_SPI_TransmitReceive_DMA(_hspi, mosiBytes, misoBytes, numBytes);
+    assert(spiStatus == HAL_OK);
 
     semaphoreTaken = xSemaphoreTake(_semaphore[1], portMAX_DELAY);
+
+    _cs.set();
 
     if (semaphoreTaken == pdFALSE) {
         return (EXIT_FAILURE);
@@ -66,15 +69,16 @@ uint8_t Spi::transmit_receive(Queue<uint8_t> &queue) {
         queue.enqueue(misoBytes[i]);
     }
 
-    _cs.set();
-
     xSemaphoreGive(_semaphore[0]);
 
     return (EXIT_SUCCESS);
 }
 
 void Spi::irq(SPI_HandleTypeDef *hspi) {
-    xSemaphoreGiveFromISR(_semaphore[1], NULL);
+    BaseType_t higherPriorityTaskWoken;
+
+    xSemaphoreGiveFromISR(_semaphore[1], &higherPriorityTaskWoken);
+    portYIELD_FROM_ISR(higherPriorityTaskWoken);
 }
 
 extern "C" void HAL_SPI_TxRxCpltCallback(SPI_HandleTypeDef *hspi) {

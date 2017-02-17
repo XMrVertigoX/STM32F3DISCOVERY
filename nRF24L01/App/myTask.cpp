@@ -19,24 +19,22 @@ MyTask::~MyTask() {}
 
 void MyTask::setup() {
     _receiver.configureRxPipe(0, _rxQueue, 0xF);
-    _receiver.setDataRate(DataRate_1MBPS);
-    _receiver.setCrcConfig(CrcConfig_2Bytes);
     _receiver.switchOperatingMode(OperatingMode_Rx);
 
     _transmitter.configureTxPipe(_txQueue, 0xF);
-    _transmitter.setDataRate(DataRate_1MBPS);
-    _transmitter.setCrcConfig(CrcConfig_2Bytes);
     _transmitter.switchOperatingMode(OperatingMode_Tx);
 
     uint8_t i = 0;
-    while (_txQueue.freeSlots()) {
+    while (_txQueue.queueSpacesAvailable()) {
         _txQueue.enqueue(i);
         i++;
     }
+
+    _transmitter.taskNotify();
 }
 
 void MyTask::loop() {
     uint8_t tmp;
     _rxQueue.dequeue(tmp);
-    LOG("%d", tmp);
+    LOG("%x", tmp);
 }
