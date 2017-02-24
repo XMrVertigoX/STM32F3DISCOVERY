@@ -30,7 +30,7 @@ void MyTask::setup() {
         i++;
     }
 
-    _transmitter.transmit(_txQueue);
+    _transmitter.send(_txQueue);
 }
 
 void MyTask::loop() {
