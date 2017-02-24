@@ -5,12 +5,7 @@ PROJECT_NAME = nRF24L01
 # ----- Directories and files -------------------------------------------------
 
 # Directories
-LIBS_DIR    = ../libs
-
-CMSIS    = Drivers/CMSIS
-DEVICE   = Drivers/CMSIS/Device/ST/STM32F3xx
-DRIVER   = Drivers/STM32F3xx_HAL_Driver
-FREERTOS = Middlewares/Third_Party/FreeRTOS/Source
+LIBS = ../libs
 
 #  Files
 LINKER_SCRIPT = TrueSTUDIO/$(PROJECT_NAME)/STM32F303VC_FLASH.ld
@@ -19,31 +14,29 @@ LINKER_SCRIPT = TrueSTUDIO/$(PROJECT_NAME)/STM32F303VC_FLASH.ld
 
 # SYMBOLS += NDEBUG
 SYMBOLS += STM32F303xC
-# SYMBOLS += ARM_MATH_CM4
 
 # ----- Include directories ---------------------------------------------------
 
-INCLUDE_DIRS += $(LIBS_DIR)
-
 # CMSIS
-INCLUDE_DIRS += $(CMSIS)/Include
-
-# CMSIS device
-INCLUDE_DIRS += $(DEVICE)/Include
+INCLUDE_DIRS += Drivers/CMSIS/Include
+INCLUDE_DIRS += Drivers/CMSIS/Device/ST/STM32F3xx/Include
 
 # HAL driver
-INCLUDE_DIRS += $(DRIVER)/Inc
+INCLUDE_DIRS += Drivers/STM32F3xx_HAL_Driver/Inc
 
 # Middlewares
-INCLUDE_DIRS += $(FREERTOS)/CMSIS_RTOS
-INCLUDE_DIRS += $(FREERTOS)/include
-INCLUDE_DIRS += $(FREERTOS)/portable/GCC/ARM_CM4F
-
-# SEGGER RTT
-INCLUDE_DIRS += $(LIBS_DIR)/SEGGER_RTT_V612d/RTT
+INCLUDE_DIRS += Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS
+INCLUDE_DIRS += Middlewares/Third_Party/FreeRTOS/Source/include
+INCLUDE_DIRS += Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM4F
 
 # STM32CubeMX auto generated code
 INCLUDE_DIRS += Inc
+
+# Libs root
+INCLUDE_DIRS += $(LIBS)
+
+# SEGGER RTT
+INCLUDE_DIRS += $(LIBS)/SEGGER_RTT_V612d/RTT
 
 # Project/Application
 INCLUDE_DIRS += Config
@@ -51,16 +44,16 @@ INCLUDE_DIRS += Config
 # ----- Source files ----------------------------------------------------------
 
 # SEGGER RTT
-SOURCE_FILES += $(LIBS_DIR)/SEGGER_RTT_V612d/RTT/SEGGER_RTT.c
+SOURCE_FILES += $(LIBS)/SEGGER_RTT_V612d/RTT/SEGGER_RTT.c
 
 # xXx
-SOURCE_FILES += $(wildcard $(LIBS_DIR)/xXx/components/wireless/nrf24l01p/*.cpp)
-SOURCE_FILES += $(wildcard $(LIBS_DIR)/xXx/os/*.cpp)
-SOURCE_FILES += $(wildcard $(LIBS_DIR)/xXx/support/*.cpp)
-SOURCE_FILES += $(wildcard $(LIBS_DIR)/xXx/utils/*.cpp)
+SOURCE_FILES += $(wildcard $(LIBS)/xXx/components/wireless/nrf24l01p/*.cpp)
+SOURCE_FILES += $(wildcard $(LIBS)/xXx/os/*.cpp)
+SOURCE_FILES += $(wildcard $(LIBS)/xXx/support/*.cpp)
+SOURCE_FILES += $(wildcard $(LIBS)/xXx/utils/*.cpp)
 
 # Add all supported source files in project folder
-SOURCE_FILES += $(shell find . -iregex ".*\.\(c\|cpp\|s\)")
+SOURCE_FILES += $(shell find -iregex ".*\.\(c\|cpp\|s\)")
 
 # ----- Libraries -------------------------------------------------------------
 
@@ -88,7 +81,7 @@ LDFLAGS += -T $(realpath $(LINKER_SCRIPT))
 
 TOOLCHAIN_PREFIX = arm-none-eabi-
 
-include ../libs/xXx/utils/rules.mk
+include $(LIBS)/xXx/utils/rules.mk
 
 download: $(EXECUTABLE)
 	$(TOOLCHAIN_PREFIX)gdb -q -x download.gdb $<

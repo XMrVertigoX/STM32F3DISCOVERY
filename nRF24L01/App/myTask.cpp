@@ -21,7 +21,7 @@ void MyTask::setup() {
     _receiver.configureRxPipe(0, _rxQueue, 0xF);
     _receiver.switchOperatingMode(OperatingMode_Rx);
 
-    _transmitter.configureTxPipe(_txQueue, 0xF);
+    _transmitter.configureTxPipe(0xF);
     _transmitter.switchOperatingMode(OperatingMode_Tx);
 
     uint8_t i = 0;
@@ -30,7 +30,7 @@ void MyTask::setup() {
         i++;
     }
 
-    _transmitter.taskNotify();
+    _transmitter.transfer(_txQueue);
 }
 
 void MyTask::loop() {
