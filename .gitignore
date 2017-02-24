@@ -1,3 +1,4 @@
 **/_out
 
-**/.mxproject
+libs/*
+!libs/*.zip
