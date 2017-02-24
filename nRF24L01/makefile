@@ -27,7 +27,6 @@ INCLUDE_DIRS += $(LIBS_DIR)
 
 # CMSIS
 INCLUDE_DIRS += $(CMSIS)/Include
-# LIBRARY_DIRS += $(CMSIS)/Lib/GCC
 
 # CMSIS device
 INCLUDE_DIRS += $(DEVICE)/Include
@@ -40,6 +39,8 @@ INCLUDE_DIRS += $(FREERTOS)/CMSIS_RTOS
 INCLUDE_DIRS += $(FREERTOS)/include
 INCLUDE_DIRS += $(FREERTOS)/portable/GCC/ARM_CM4F
 
+# SEGGER RTT
+INCLUDE_DIRS += $(LIBS_DIR)/SEGGER_RTT_V612d/RTT
 
 # STM32CubeMX auto generated code
 INCLUDE_DIRS += Inc
@@ -50,7 +51,7 @@ INCLUDE_DIRS += Config
 # ----- Source files ----------------------------------------------------------
 
 # SEGGER RTT
-SOURCE_FILES += $(wildcard $(LIBS_DIR)/SEGGER_RTT/*.c)
+SOURCE_FILES += $(LIBS_DIR)/SEGGER_RTT_V612d/RTT/SEGGER_RTT.c
 
 # xXx
 SOURCE_FILES += $(wildcard $(LIBS_DIR)/xXx/components/wireless/nrf24l01p/*.cpp)
@@ -63,7 +64,7 @@ SOURCE_FILES += $(shell find . -iregex ".*\.\(c\|cpp\|s\)")
 
 # ----- Libraries -------------------------------------------------------------
 
-# LIBRARIES += arm_cortexM4lf_math
+# LIBRARIES +=
 
 # ----- Flags -----------------------------------------------------------------
 
