@@ -32,8 +32,7 @@ Spi::Spi(SPI_HandleTypeDef &hspi, Gpio &cs) : _hspi(&hspi), _cs(cs) {
 
 Spi::~Spi() {}
 
-uint8_t Spi::transmit_receive(Queue<uint8_t> &queue) {
-    uint8_t numBytes;
+uint8_t Spi::transmit_receive(uint8_t bytes[], uint32_t numBytes) {
     BaseType_t semaphoreTaken;
     HAL_StatusTypeDef spiStatus;
 
@@ -43,18 +42,9 @@ uint8_t Spi::transmit_receive(Queue<uint8_t> &queue) {
         return (EXIT_FAILURE);
     }
 
-    numBytes = queue.queueMessagesWaiting();
-
-    uint8_t mosiBytes[numBytes];
-    uint8_t misoBytes[numBytes];
-
-    for (int i = 0; i < numBytes; ++i) {
-        queue.dequeue(mosiBytes[i]);
-    }
-
     _cs.clear();
 
-    spiStatus = HAL_SPI_TransmitReceive_DMA(_hspi, mosiBytes, misoBytes, numBytes);
+    spiStatus = HAL_SPI_TransmitReceive_DMA(_hspi, bytes, bytes, numBytes);
     assert(spiStatus == HAL_OK);
 
     semaphoreTaken = xSemaphoreTake(_semaphore[1], portMAX_DELAY);
@@ -63,10 +53,6 @@ uint8_t Spi::transmit_receive(Queue<uint8_t> &queue) {
 
     if (semaphoreTaken == pdFALSE) {
         return (EXIT_FAILURE);
-    }
-
-    for (int i = 0; i < numBytes; ++i) {
-        queue.enqueue(misoBytes[i]);
     }
 
     xSemaphoreGive(_semaphore[0]);

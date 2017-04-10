@@ -4,6 +4,8 @@
 #include <xXx/components/wireless/nrf24l01p/nrf24l01p_esb.hpp>
 #include <xXx/os/simpletask.hpp>
 
+#include "led.hpp"
+
 using namespace xXx;
 
 class MyTask : public SimpleTask {
@@ -13,6 +15,8 @@ class MyTask : public SimpleTask {
 
     Queue<uint8_t> _rxQueue;
     Queue<uint8_t> _txQueue;
+
+    Led _led[8];
 
    public:
     MyTask(nRF24L01P_ESB &transmitter, nRF24L01P_ESB &receiver);
