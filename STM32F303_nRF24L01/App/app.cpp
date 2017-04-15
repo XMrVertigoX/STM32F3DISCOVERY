@@ -4,6 +4,7 @@
 #include <xXx/utils/logging.hpp>
 
 #include "../Inc/main.h"
+
 #include "gpio.hpp"
 #include "rxtask.hpp"
 #include "spi.hpp"

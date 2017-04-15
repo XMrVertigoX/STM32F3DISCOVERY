@@ -17,7 +17,7 @@ static union {
 
 using namespace xXx;
 
-TxTask::TxTask(nRF24L01P_ESB &transmitter) : _transmitter(transmitter) {
+TxTask::TxTask(nRF24L01P_ESB& transmitter) : _transmitter(transmitter) {
     counter.u32 = 0;
 }
 
@@ -30,7 +30,8 @@ void TxTask::setup() {
     _transmitter.setChannel(2);
     _transmitter.switchOperatingMode(OperatingMode_Tx);
 
-    _transmitter.send(counter.p8, sizeof(counter), NULL, NULL);
+    _transmitter.send(counter.p8, sizeof(counter), [](void* user) { LOG("Initial send done"); },
+                      NULL);
 }
 
 void TxTask::loop() {
