@@ -3,11 +3,11 @@
 #include <xXx/components/wireless/nrf24l01p/nrf24l01p_esb.hpp>
 #include <xXx/utils/logging.hpp>
 
-#include "../Inc/main.h"
 #include "gpio.hpp"
-#include "rxtask.hpp"
+#include "mytask.hpp"
 #include "spi.hpp"
-#include "txtask.hpp"
+
+#include "../Inc/main.h"
 
 extern SPI_HandleTypeDef hspi2;
 
@@ -25,14 +25,12 @@ static Spi port2_SPI(hspi2, port2_CS);
 static nRF24L01P_ESB transmitter(port1_SPI, port1_CE, port1_INT);
 static nRF24L01P_ESB receiver(port2_SPI, port2_CE, port2_INT);
 
-static TxTask txTask(transmitter);
-static RxTask rxTask(receiver);
+static MyTask myTask(transmitter, receiver);
 
 extern "C" void appInit() {
     LOG("%s", __FUNCTION__);
 
     transmitter.taskCreate();
     receiver.taskCreate();
-    txTask.taskCreate();
-    rxTask.taskCreate();
+    myTask.taskCreate();
 }
