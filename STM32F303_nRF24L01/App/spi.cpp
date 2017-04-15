@@ -2,12 +2,10 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <stm32f3xx_hal.h>
+#include <stm32f3xx_hal_conf.h>
 
 #include <FreeRTOS.h>
 #include <semphr.h>
-
-#include <spi.h>
 
 #include <xXx/os/simpletask.hpp>
 #include <xXx/templates/queue.hpp>

@@ -8,29 +8,38 @@ PROJECT_NAME = nRF24L01
 LIBS = ../libs
 
 #  Files
-LINKER_SCRIPT = TrueSTUDIO/$(PROJECT_NAME)/STM32F303VC_FLASH.ld
+LINKER_SCRIPT = TrueSTUDIO/STM32F303_nRF24L01/STM32F303VC_FLASH.ld
 
 # ----- Symbols ---------------------------------------------------------------
 
-# SYMBOLS += NDEBUG
 SYMBOLS += STM32F303xC
+SYMBOLS += ARM_MATH_CM4
+# SYMBOLS += NDEBUG
 
-# ----- Include directories ---------------------------------------------------
+# ----- Source files ----------------------------------------------------------
 
 # CMSIS
 INCLUDE_DIRS += Drivers/CMSIS/Include
 INCLUDE_DIRS += Drivers/CMSIS/Device/ST/STM32F3xx/Include
+SOURCE_FILES += TrueSTUDIO/startup_stm32f303xc.s
 
 # HAL driver
 INCLUDE_DIRS += Drivers/STM32F3xx_HAL_Driver/Inc
+SOURCE_FILES += $(wildcard Drivers/STM32F3xx_HAL_Driver/Src/*.c)
 
 # Middlewares
 INCLUDE_DIRS += Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS
 INCLUDE_DIRS += Middlewares/Third_Party/FreeRTOS/Source/include
 INCLUDE_DIRS += Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM4F
+SOURCE_FILES += $(wildcard Middlewares/Third_Party/FreeRTOS/Source/*.c)
+SOURCE_FILES += $(wildcard Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS/*.c)
+SOURCE_FILES += Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM4F/port.c
+SOURCE_FILES += Middlewares/Third_Party/FreeRTOS/Source/portable/MemMang/heap_4.c
 
 # STM32CubeMX auto generated code
 INCLUDE_DIRS += Inc
+SOURCE_FILES += $(wildcard Src/*.c)
+SOURCE_FILES += $(wildcard Src/*.cpp)
 
 # Libs root
 INCLUDE_DIRS += $(LIBS)
@@ -41,8 +50,6 @@ INCLUDE_DIRS += $(LIBS)/SEGGER_RTT_V612d/RTT
 # Project/Application
 INCLUDE_DIRS += Config
 
-# ----- Source files ----------------------------------------------------------
-
 # SEGGER RTT
 SOURCE_FILES += $(LIBS)/SEGGER_RTT_V612d/RTT/SEGGER_RTT.c
 
@@ -52,12 +59,12 @@ SOURCE_FILES += $(wildcard $(LIBS)/xXx/os/*.cpp)
 SOURCE_FILES += $(wildcard $(LIBS)/xXx/support/*.cpp)
 SOURCE_FILES += $(wildcard $(LIBS)/xXx/utils/*.cpp)
 
-# Add all supported source files in project folder
-SOURCE_FILES += $(shell find -iregex ".*\.\(c\|cpp\|s\)")
+
+SOURCE_FILES += $(wildcard App/*.cpp)
 
 # ----- Libraries -------------------------------------------------------------
 
-# LIBRARIES +=
+LIBRARIES +=
 
 # ----- Flags -----------------------------------------------------------------
 

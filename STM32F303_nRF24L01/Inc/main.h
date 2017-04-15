@@ -51,6 +51,10 @@
 
 /* Private define ------------------------------------------------------------*/
 
+#define PORT1_INT_Pin GPIO_PIN_2
+#define PORT1_INT_GPIO_Port GPIOC
+#define PORT1_CE_Pin GPIO_PIN_2
+#define PORT1_CE_GPIO_Port GPIOF
 #define BUTTON_Pin GPIO_PIN_0
 #define BUTTON_GPIO_Port GPIOA
 #define LED_Pin GPIO_PIN_8
@@ -69,18 +73,15 @@
 #define LEDE14_GPIO_Port GPIOE
 #define LEDE15_Pin GPIO_PIN_15
 #define LEDE15_GPIO_Port GPIOE
-#define nRF24L01_IRQ_1_Pin GPIO_PIN_11
-#define nRF24L01_IRQ_1_GPIO_Port GPIOB
-#define nRF24L01_CE_1_Pin GPIO_PIN_13
-#define nRF24L01_CE_1_GPIO_Port GPIOD
-#define nRF24L01_CSN_1_Pin GPIO_PIN_15
-#define nRF24L01_CSN_1_GPIO_Port GPIOD
-#define nRF24L01_IRQ_2_Pin GPIO_PIN_9
-#define nRF24L01_IRQ_2_GPIO_Port GPIOC
-#define nRF24L01_CE_2_Pin GPIO_PIN_6
-#define nRF24L01_CE_2_GPIO_Port GPIOF
-#define nRF24L01_CSN_2_Pin GPIO_PIN_15
-#define nRF24L01_CSN_2_GPIO_Port GPIOA
+#define PORT2_INT_Pin GPIO_PIN_11
+#define PORT2_INT_GPIO_Port GPIOB
+#define PORT1_CS_Pin GPIO_PIN_12
+#define PORT1_CS_GPIO_Port GPIOB
+#define PORT2_CE_Pin GPIO_PIN_13
+#define PORT2_CE_GPIO_Port GPIOD
+#define PORT2_CS_Pin GPIO_PIN_15
+#define PORT2_CS_GPIO_Port GPIOD
+
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */

@@ -12,10 +12,7 @@ class MyTask : public SimpleTask {
    private:
     nRF24L01P_ESB &_transmitter;
     nRF24L01P_ESB &_receiver;
-
-    Queue<uint8_t> _rxQueue;
-    Queue<uint8_t> _txQueue;
-
+    Queue<Package_t> _rxQueue;
     Led _led[8];
 
    public:
