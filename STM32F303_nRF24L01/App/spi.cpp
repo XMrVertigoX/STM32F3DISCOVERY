@@ -30,6 +30,9 @@ Spi::Spi(SPI_HandleTypeDef &hspi, Gpio &cs) : _hspi(&hspi), _cs(cs) {
     }
 
     xSemaphoreGive(_semaphore[0]);
+
+    assert(uxSemaphoreGetCount(_semaphore[0]) == 1);
+    assert(uxSemaphoreGetCount(_semaphore[1]) == 0);
 }
 
 Spi::~Spi() {}
@@ -39,13 +42,18 @@ uint8_t Spi::transmit_receive(uint8_t txBytes[], uint8_t rxBytes[], size_t numBy
 
     _cs.clear();
 
+    taskENTER_CRITICAL();
     HAL_SPI_TransmitReceive_IT(_hspi, txBytes, rxBytes, numBytes);
+    taskEXIT_CRITICAL();
 
     xSemaphoreTake(_semaphore[1], portMAX_DELAY);
 
     _cs.set();
 
     xSemaphoreGive(_semaphore[0]);
+
+    assert(uxSemaphoreGetCount(_semaphore[0]) == 1);
+    assert(uxSemaphoreGetCount(_semaphore[1]) == 0);
 
     return (EXIT_SUCCESS);
 }

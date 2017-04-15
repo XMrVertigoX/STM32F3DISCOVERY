@@ -13,6 +13,11 @@
 
 static Package_t package;
 
+static union {
+    uint8_t p8[sizeof(uint32_t)];
+    uint32_t u32;
+} counter;
+
 using namespace xXx;
 
 RxTask::RxTask(nRF24L01P_ESB &receiver)
@@ -33,9 +38,15 @@ void RxTask::setup() {
 void RxTask::loop() {
     _rxQueue.dequeue(package);
 
+    memcpy(counter.p8, package.bytes, package.numBytes);
+
     for (uint8_t i = 0; i < package.numBytes; ++i) {
         if (package.bytes[i] > 0) {
             _led[i].set();
         }
+    }
+
+    if ((counter.u32 % 1000) == 0) {
+        LOG("%lu", counter.u32);
     }
 }

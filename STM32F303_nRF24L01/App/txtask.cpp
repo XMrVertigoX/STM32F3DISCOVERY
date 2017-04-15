@@ -10,11 +10,16 @@
 #include "gpio.hpp"
 #include "txtask.hpp"
 
-static uint64_t counter = 0;
+static union {
+    uint8_t p8[sizeof(uint32_t)];
+    uint32_t u32;
+} counter;
 
 using namespace xXx;
 
-TxTask::TxTask(nRF24L01P_ESB &transmitter) : _transmitter(transmitter) {}
+TxTask::TxTask(nRF24L01P_ESB &transmitter) : _transmitter(transmitter) {
+    counter.u32 = 0;
+}
 
 TxTask::~TxTask() {}
 
@@ -25,12 +30,12 @@ void TxTask::setup() {
     _transmitter.setChannel(2);
     _transmitter.switchOperatingMode(OperatingMode_Tx);
 
-    _transmitter.send((uint8_t *)&counter, sizeof(counter), NULL, NULL);
+    _transmitter.send(counter.p8, sizeof(counter), NULL, NULL);
 }
 
 void TxTask::loop() {
-    _transmitter.send((uint8_t *)&counter, sizeof(counter), NULL, NULL);
-    counter++;
+    _transmitter.send(counter.p8, sizeof(counter), NULL, NULL);
+    counter.u32++;
 
     vTaskDelay(1);
 }
