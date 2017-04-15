@@ -20,12 +20,16 @@ SemaphoreHandle_t Spi::_semaphore[2];
 
 Spi::Spi(SPI_HandleTypeDef &hspi, Gpio &cs) : _hspi(&hspi), _cs(cs) {
     if (_semaphore[0] == NULL) {
-        vSemaphoreCreateBinary(_semaphore[0]);
+        _semaphore[0] = xSemaphoreCreateBinary();
+        assert(_semaphore[0] != NULL);
     }
 
     if (_semaphore[1] == NULL) {
         _semaphore[1] = xSemaphoreCreateBinary();
+        assert(_semaphore[1] != NULL);
     }
+
+    xSemaphoreGive(_semaphore[0]);
 }
 
 Spi::~Spi() {}
@@ -62,7 +66,10 @@ void Spi::irq(SPI_HandleTypeDef *hspi) {
     BaseType_t higherPriorityTaskWoken;
 
     xSemaphoreGiveFromISR(_semaphore[1], &higherPriorityTaskWoken);
-    portYIELD_FROM_ISR(higherPriorityTaskWoken);
+
+    if (higherPriorityTaskWoken) {
+        taskYIELD();
+    }
 }
 
 extern "C" void HAL_SPI_ErrorCallback(SPI_HandleTypeDef *hspi) {

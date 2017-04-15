@@ -11,7 +11,8 @@
 #include "mytask.hpp"
 
 static const uint64_t address = 0xE7E7E7E7E7;
-static uint64_t counter       = 0;
+
+static uint64_t counter = 0;
 static uint8_t buffer[sizeof(counter)];
 
 using namespace xXx;
@@ -25,17 +26,17 @@ MyTask::MyTask(nRF24L01P_ESB &transmitter, nRF24L01P_ESB &receiver)
 MyTask::~MyTask() {}
 
 void MyTask::setup() {
-    _receiver.configureRxPipe(0, _rxQueue, address);
-    _receiver.setDataRate(DataRate_2MBPS);
-    _receiver.setCrcConfig(CrcConfig_2Bytes);
-    _receiver.setChannel(2);
-    _receiver.switchOperatingMode(OperatingMode_Rx);
-
     _transmitter.configureTxPipe(address);
     _transmitter.setDataRate(DataRate_2MBPS);
     _transmitter.setCrcConfig(CrcConfig_2Bytes);
     _transmitter.setChannel(2);
     _transmitter.switchOperatingMode(OperatingMode_Tx);
+
+    _receiver.configureRxPipe(0, _rxQueue, address);
+    _receiver.setDataRate(DataRate_2MBPS);
+    _receiver.setCrcConfig(CrcConfig_2Bytes);
+    _receiver.setChannel(2);
+    _receiver.switchOperatingMode(OperatingMode_Rx);
 
     _transmitter.send(buffer, sizeof(buffer), NULL, NULL);
 }
