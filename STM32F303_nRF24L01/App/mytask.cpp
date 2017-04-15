@@ -1,4 +1,5 @@
 #include <assert.h>
+#include <string.h>
 
 #include <FreeRTOS.h>
 #include <task.h>
@@ -10,7 +11,8 @@
 #include "mytask.hpp"
 
 static const uint64_t address = 0xE7E7E7E7E7;
-static uint8_t buffer[32];
+static uint64_t counter       = 0;
+static uint8_t buffer[sizeof(counter)];
 
 using namespace xXx;
 
@@ -34,14 +36,19 @@ void MyTask::setup() {
     _transmitter.setCrcConfig(CrcConfig_2Bytes);
     _transmitter.setChannel(2);
     _transmitter.switchOperatingMode(OperatingMode_Tx);
+
+    _transmitter.send(buffer, sizeof(buffer), NULL, NULL);
 }
 
 void MyTask::loop() {
-    _transmitter.send(buffer, sizeof(buffer), NULL, NULL);
-
     Package_t tmp;
     _rxQueue.dequeue(tmp);
-    // _led[tmp % 8].toggle();
+    // BUFFER("tmp", tmp.bytes, tmp.numBytes);
+    _led[tmp.bytes[0] % 8].toggle();
 
-    BUFFER("tmp", tmp.bytes, tmp.numBytes);
+    counter++;
+    memcpy(buffer, &counter, sizeof(counter));
+    _transmitter.send(buffer, sizeof(buffer), NULL, NULL);
+
+    vTaskDelay(10);
 }
