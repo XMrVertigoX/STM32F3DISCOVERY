@@ -18,7 +18,9 @@ SYMBOLS += ARM_MATH_CM4
 
 # ----- Source files ----------------------------------------------------------
 
-# CubeMX
+INCLUDE_DIRS += $(LIBS)
+INCLUDE_DIRS += $(LIBS)/SEGGER_RTT_V612d/RTT
+
 INCLUDE_DIRS += Drivers/CMSIS/Device/ST/STM32F3xx/Include
 INCLUDE_DIRS += Drivers/CMSIS/Include
 INCLUDE_DIRS += Drivers/STM32F3xx_HAL_Driver/Inc
@@ -27,26 +29,15 @@ INCLUDE_DIRS += Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS
 INCLUDE_DIRS += Middlewares/Third_Party/FreeRTOS/Source/include
 INCLUDE_DIRS += Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM4F
 
-SOURCE_FILES += $(wildcard Drivers/STM32F3xx_HAL_Driver/Src/*.c)
-SOURCE_FILES += $(wildcard Middlewares/Third_Party/FreeRTOS/Source/*.c)
-SOURCE_FILES += $(wildcard Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS/*.c)
-SOURCE_FILES += $(wildcard Src/*.c)
-SOURCE_FILES += Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM4F/port.c
-SOURCE_FILES += Middlewares/Third_Party/FreeRTOS/Source/portable/MemMang/heap_4.c
-SOURCE_FILES += TrueSTUDIO/startup_stm32f303xc.s
-
-INCLUDE_DIRS += $(LIBS)
-INCLUDE_DIRS += $(LIBS)/SEGGER_RTT_V612d/RTT
+INCLUDE_DIRS += ./Config
 
 SOURCE_FILES += $(LIBS)/SEGGER_RTT_V612d/RTT/SEGGER_RTT.c
-
 SOURCE_FILES += $(wildcard $(LIBS)/xXx/components/wireless/nrf24l01p/*.cpp)
 SOURCE_FILES += $(wildcard $(LIBS)/xXx/os/*.cpp)
 SOURCE_FILES += $(wildcard $(LIBS)/xXx/support/*.cpp)
 SOURCE_FILES += $(wildcard $(LIBS)/xXx/utils/*.cpp)
 
-INCLUDE_DIRS += Config
-SOURCE_FILES += $(wildcard App/*.cpp)
+SOURCE_FILES += $(shell find . -iregex ".*\.\(c\|cpp\|s\|S\)")
 
 # ----- Libraries -------------------------------------------------------------
 
