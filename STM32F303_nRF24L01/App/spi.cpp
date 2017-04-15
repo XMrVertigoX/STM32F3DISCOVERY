@@ -1,5 +1,4 @@
 #include <assert.h>
-#include <stdlib.h>
 #include <string.h>
 
 #include <stm32f3xx_hal_conf.h>
@@ -52,7 +51,7 @@ uint8_t Spi::transmit_receive(uint8_t txBytes[], uint8_t rxBytes[], size_t numBy
     assert(uxSemaphoreGetCount(_semaphore[0]) == 1);
     assert(uxSemaphoreGetCount(_semaphore[1]) == 0);
 
-    return (EXIT_SUCCESS);
+    return (0);
 }
 
 void Spi::irq(SPI_HandleTypeDef *hspi) {
