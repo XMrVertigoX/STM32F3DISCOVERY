@@ -30,8 +30,6 @@ static TxTask txTask(transmitter);
 static RxTask rxTask(receiver);
 
 extern "C" void appInit() {
-    LOG("%s", __FUNCTION__);
-
     transmitter.taskCreate();
     receiver.taskCreate();
     txTask.taskCreate();
