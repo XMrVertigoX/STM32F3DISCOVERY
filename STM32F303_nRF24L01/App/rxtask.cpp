@@ -13,17 +13,17 @@
 
 static Package_t package;
 
-static union {
-    uint8_t p8[sizeof(uint32_t)];
-    uint32_t u32;
-} counter;
+// static union {
+//     uint8_t p8[sizeof(uint32_t)];
+//     uint32_t u32;
+// } counter;
 
 using namespace xXx;
 
 RxTask::RxTask(nRF24L01P_ESB &receiver)
-    : _receiver(receiver), _rxQueue(Queue<Package_t>(10)), _led{Led(LD3), Led(LD5),  Led(LD7),
-                                                                Led(LD9), Led(LD10), Led(LD8),
-                                                                Led(LD6), Led(LD4)} {}
+    : _receiver(receiver),
+      _rxQueue(Queue<Package_t>(10)),
+      _led{Led(LD3), Led(LD5), Led(LD7), Led(LD9), Led(LD10), Led(LD8), Led(LD6), Led(LD4)} {}
 
 RxTask::~RxTask() {}
 
@@ -38,15 +38,19 @@ void RxTask::setup() {
 void RxTask::loop() {
     _rxQueue.dequeue(package);
 
-    memcpy(counter.p8, package.bytes, package.numBytes);
+    // BUFFER("package", package.bytes, package.numBytes);
 
-    for (uint8_t i = 0; i < package.numBytes; ++i) {
-        if (package.bytes[i] > 0) {
-            _led[i].set();
-        }
-    }
+    // memcpy(counter.p8, package.bytes, package.numBytes);
 
-    if ((counter.u32 % 1000) == 0) {
-        LOG("%lu", counter.u32);
-    }
+    // for (uint8_t i = 0; i < package.numBytes; ++i) {
+    //     if (package.bytes[i] > 0) {
+    //         _led[i].set();
+    //     }
+    // }
+
+    _led[package.bytes[0] % 8].toggle();
+
+    // if ((counter.u32 % 1000) == 0) {
+    //     LOG("%lu", counter.u32);
+    // }
 }

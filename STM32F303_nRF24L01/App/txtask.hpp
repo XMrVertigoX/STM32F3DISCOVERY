@@ -10,10 +10,9 @@
 using namespace xXx;
 
 class TxTask : public SimpleTask {
-   private:
+   public:
     nRF24L01P_ESB &_transmitter;
 
-   public:
     TxTask(nRF24L01P_ESB &transmitter);
     ~TxTask();
 
