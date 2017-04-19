@@ -11,46 +11,30 @@
 
 #include "gpio.hpp"
 
-static Package_t package;
-
-// static union {
-//     uint8_t p8[sizeof(uint32_t)];
-//     uint32_t u32;
-// } counter;
+#define LAMBDA []
 
 using namespace xXx;
 
+static void callback(uint8_t bytes[], size_t numBytes, void *user) {
+    RxTask *self = static_cast<RxTask *>(user);
+    self->_led[bytes[0] % 8].toggle();
+};
+
 RxTask::RxTask(nRF24L01P_ESB &receiver)
-    : _receiver(receiver),
-      _rxQueue(Queue<Package_t>(10)),
-      _led{Led(LD3), Led(LD5), Led(LD7), Led(LD9), Led(LD10), Led(LD8), Led(LD6), Led(LD4)} {}
+    : _receiver(receiver), _led{Led(LD3),  Led(LD5), Led(LD7), Led(LD9),
+                                Led(LD10), Led(LD8), Led(LD6), Led(LD4)} {}
 
 RxTask::~RxTask() {}
 
 void RxTask::setup() {
-    _receiver.configureRxPipe(0, _rxQueue, address);
+    _receiver.configureRxPipe(0, address);
     _receiver.setDataRate(DataRate_2MBPS);
     _receiver.setCrcConfig(CrcConfig_2Bytes);
     _receiver.setChannel(2);
+    _receiver.setOutputPower(OutputPower_m18dBm);
     _receiver.switchOperatingMode(OperatingMode_Rx);
+
+    _receiver.startListening(0, callback, this);
 }
 
-void RxTask::loop() {
-    _rxQueue.dequeue(package);
-
-    // BUFFER("package", package.bytes, package.numBytes);
-
-    // memcpy(counter.p8, package.bytes, package.numBytes);
-
-    // for (uint8_t i = 0; i < package.numBytes; ++i) {
-    //     if (package.bytes[i] > 0) {
-    //         _led[i].set();
-    //     }
-    // }
-
-    _led[package.bytes[0] % 8].toggle();
-
-    // if ((counter.u32 % 1000) == 0) {
-    //     LOG("%lu", counter.u32);
-    // }
-}
+void RxTask::loop() {}

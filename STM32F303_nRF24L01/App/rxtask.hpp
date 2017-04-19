@@ -9,13 +9,16 @@
 
 using namespace xXx;
 
+struct Package_t {
+    uint8_t bytes[rxFifoSize];
+    uint8_t numBytes;
+};
+
 class RxTask : public SimpleTask {
-   private:
+   public:
     nRF24L01P_ESB &_receiver;
-    Queue<Package_t> _rxQueue;
     Led _led[8];
 
-   public:
     RxTask(nRF24L01P_ESB &receiver);
     ~RxTask();
 

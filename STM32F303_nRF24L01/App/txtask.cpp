@@ -10,11 +10,10 @@
 #include "gpio.hpp"
 #include "txtask.hpp"
 
-uint8_t buffer[48] = {0};
+uint8_t buffer[10240] = {0};
 
 static void callback(uint8_t bytes[], size_t numBytes, void* user) {
     TxTask* self = static_cast<TxTask*>(user);
-
     buffer[0]++;
     self->_transmitter.send(buffer, sizeof(buffer), callback, self);
 };
@@ -30,6 +29,7 @@ void TxTask::setup() {
     _transmitter.setDataRate(DataRate_2MBPS);
     _transmitter.setCrcConfig(CrcConfig_2Bytes);
     _transmitter.setChannel(2);
+    _transmitter.setOutputPower(OutputPower_m18dBm);
     _transmitter.switchOperatingMode(OperatingMode_Tx);
 
     _transmitter.send(buffer, sizeof(buffer), callback, this);
