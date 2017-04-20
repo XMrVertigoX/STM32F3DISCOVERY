@@ -30,8 +30,6 @@ TxTask txTask(transmitter);
 RxTask rxTask(receiver);
 
 extern "C" void appInit() {
-    transmitter.taskCreate();
-    receiver.taskCreate();
     txTask.taskCreate();
     rxTask.taskCreate();
 }
