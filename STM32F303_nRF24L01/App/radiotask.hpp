@@ -4,17 +4,18 @@
 #include <xXx/components/wireless/nrf24l01p/nrf24l01p_esb.hpp>
 #include <xXx/os/simpletask.hpp>
 
-#include "app.h"
 #include "led.hpp"
 
 using namespace xXx;
 
-class TxTask : public SimpleTask {
+class RadioTask : public SimpleTask {
    public:
     nRF24L01P_ESB &_transmitter;
+    nRF24L01P_ESB &_receiver;
+    Led _led[8];
 
-    TxTask(nRF24L01P_ESB &transmitter);
-    ~TxTask();
+    RadioTask(nRF24L01P_ESB &transmitter, nRF24L01P_ESB &receiver);
+    ~RadioTask();
 
     void loop();
     void setup();

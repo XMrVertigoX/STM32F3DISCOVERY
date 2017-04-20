@@ -6,9 +6,8 @@
 #include "../Inc/main.h"
 
 #include "gpio.hpp"
-#include "rxtask.hpp"
+#include "radiotask.hpp"
 #include "spi.hpp"
-#include "txtask.hpp"
 
 extern SPI_HandleTypeDef hspi2;
 
@@ -26,10 +25,8 @@ Spi port2_SPI(hspi2, port2_CS);
 nRF24L01P_ESB transmitter(port1_SPI, port1_CE, port1_INT);
 nRF24L01P_ESB receiver(port2_SPI, port2_CE, port2_INT);
 
-TxTask txTask(transmitter);
-RxTask rxTask(receiver);
+RadioTask radioTask(transmitter, receiver);
 
 extern "C" void appInit() {
-    txTask.taskCreate();
-    rxTask.taskCreate();
+    radioTask.taskCreate();
 }
