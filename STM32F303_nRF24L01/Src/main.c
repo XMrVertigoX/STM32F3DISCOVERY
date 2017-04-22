@@ -47,8 +47,6 @@
 
 /* USER CODE BEGIN Includes */
 
-#include <../App/app.h>
-
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
@@ -56,7 +54,7 @@ SPI_HandleTypeDef hspi2;
 DMA_HandleTypeDef hdma_spi2_rx;
 DMA_HandleTypeDef hdma_spi2_tx;
 
-osThreadId defaultTaskHandle;
+osThreadId applicationTaskHandle;
 
 /* USER CODE BEGIN PV */
 /* Private variables ---------------------------------------------------------*/
@@ -69,11 +67,11 @@ void Error_Handler(void);
 static void MX_GPIO_Init(void);
 static void MX_DMA_Init(void);
 static void MX_SPI2_Init(void);
-void StartDefaultTask(void const * argument);
+void applicationTaskFunction(void const * argument);
 
 /* USER CODE BEGIN PFP */
 /* Private function prototypes -----------------------------------------------*/
-
+void initializeApplication();
 /* USER CODE END PFP */
 
 /* USER CODE BEGIN 0 */
@@ -113,16 +111,16 @@ int main(void)
   /* USER CODE END RTOS_SEMAPHORES */
 
   /* USER CODE BEGIN RTOS_TIMERS */
-    /* start timers, add new ones, ... */
+    initializeApplication();
   /* USER CODE END RTOS_TIMERS */
 
   /* Create the thread(s) */
-  /* definition and creation of defaultTask */
-  osThreadDef(defaultTask, StartDefaultTask, osPriorityIdle, 0, 128);
-  defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
+  /* definition and creation of applicationTask */
+  osThreadDef(applicationTask, applicationTaskFunction, osPriorityIdle, 0, 256);
+  applicationTaskHandle = osThreadCreate(osThread(applicationTask), NULL);
 
   /* USER CODE BEGIN RTOS_THREADS */
-    appInit();
+    /* add threads, ... */
   /* USER CODE END RTOS_THREADS */
 
   /* USER CODE BEGIN RTOS_QUEUES */
@@ -337,8 +335,8 @@ static void MX_GPIO_Init(void)
 
 /* USER CODE END 4 */
 
-/* StartDefaultTask function */
-void StartDefaultTask(void const * argument)
+/* applicationTaskFunction function */
+__weak void applicationTaskFunction(void const * argument)
 {
 
   /* USER CODE BEGIN 5 */

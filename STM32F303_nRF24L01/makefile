@@ -37,7 +37,7 @@ SOURCE_FILES += $(wildcard $(LIBS)/xXx/os/*.cpp)
 SOURCE_FILES += $(wildcard $(LIBS)/xXx/support/*.cpp)
 SOURCE_FILES += $(wildcard $(LIBS)/xXx/utils/*.cpp)
 
-SOURCE_FILES += $(shell find . -iregex ".*\.\(c\|cpp\|s\|S\)")
+SOURCE_FILES += $(shell find . -iregex ".*\.\(c\|cpp\|s\)")
 
 # ----- Libraries -------------------------------------------------------------
 
