@@ -15,7 +15,7 @@
 const uint64_t address = 0xE7E7E7E7E7;
 
 union {
-    uint8_t m8[32];
+    uint8_t m8[sizeof(uint32_t)];
     uint32_t m32 = 1;
 } counter;
 
@@ -39,33 +39,22 @@ nRF24L01P_ESB receiver(port2_SPI, port2_CE, port2_INT);
 
 Led led[] = {Led(LD3), Led(LD5), Led(LD7), Led(LD9), Led(LD10), Led(LD8), Led(LD6), Led(LD4)};
 
-static void txCallback(void* user) {
-    counter.m32++;
-    transmitter.queueTransmission(counter.m8, sizeof(counter), txCallback, NULL);
-    transmitter.notify();
+static void txCallback(int8_t numRetries, void* user) {
+    LOG("numRetries: %d", numRetries);
+    //    counter.m32++;
+    //    transmitter.queueTransmission(counter.m8, sizeof(counter), txCallback, NULL);
+    //    transmitter.notify();
 };
 
 static void rxCallback(uint8_t bytes[], size_t numBytes, void* user) {
-    if (numBytes != sizeof(counter)) {
-        led[2].toggle();
-        abort();
-    }
-
-    if (memcmp(counter.m8, bytes, numBytes)) {
-        led[3].toggle();
-        abort();
-    }
-
-    if ((counter.m32 % 1000) == 0) {
-        LOG("%d", counter.m32);
-    }
+    LOG("%d", *(reinterpret_cast<uint32_t*>(bytes)));
 };
 
-static void buttonCallback(void* user) {
-    led[1].toggle();
-    button.disableInterrupt();
-    transmitter.queueTransmission(counter.m8, sizeof(counter), txCallback, NULL);
-    transmitter.notifyFromISR();
+static void buttonCallback(void* user){
+    //    button.disableInterrupt();
+    //    transmitter.queueTransmission(counter.m8, sizeof(counter), txCallback, NULL);
+    //    led[1].toggle();
+    //    transmitter.notifyFromISR();
 };
 
 extern "C" void initializeApplication() {
@@ -74,17 +63,21 @@ extern "C" void initializeApplication() {
 }
 
 extern "C" void applicationTaskFunction(void const* argument) {
+    vTaskDelay(1000);
+
     button.enableInterrupt(buttonCallback, NULL);
 
     transmitter.configureTxPipe(address);
-    transmitter.setDataRate(DataRate_2MBPS);
+    transmitter.setDataRate(DataRate_1MBPS);
     transmitter.setCrcConfig(CrcConfig_2Bytes);
     transmitter.setChannel(2);
     transmitter.setOutputPower(OutputPower_m18dBm);
+    transmitter.setRetryCount(0xF);
+    transmitter.setRetryDelay(0xF);
     transmitter.switchOperatingMode(OperatingMode_Tx);
 
     receiver.configureRxPipe(0, address);
-    receiver.setDataRate(DataRate_2MBPS);
+    receiver.setDataRate(DataRate_1MBPS);
     receiver.setCrcConfig(CrcConfig_2Bytes);
     receiver.setChannel(2);
     receiver.setOutputPower(OutputPower_m18dBm);
@@ -94,6 +87,10 @@ extern "C" void applicationTaskFunction(void const* argument) {
 
     for (;;) {
         led[0].toggle();
-        vTaskDelay(500);
+        transmitter.queueTransmission(counter.m8, sizeof(counter), txCallback, NULL);
+        transmitter.notify();
+        vTaskDelay(250);
+        led[0].toggle();
+        vTaskDelay(250);
     }
 }
