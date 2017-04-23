@@ -14,10 +14,12 @@
 
 const uint64_t address = 0xE7E7E7E7E7;
 
-union {
-    uint8_t m8[sizeof(uint32_t)];
-    uint32_t m32 = 1;
-} counter;
+union Counter_t {
+    uint8_t m8[4];
+    uint32_t m32;
+};
+
+Counter_t counter = {.m32 = 0};
 
 extern SPI_HandleTypeDef hspi2;
 
@@ -40,14 +42,15 @@ nRF24L01P_ESB receiver(port2_SPI, port2_CE, port2_INT);
 Led led[] = {Led(LD3), Led(LD5), Led(LD7), Led(LD9), Led(LD10), Led(LD8), Led(LD6), Led(LD4)};
 
 static void txCallback(int8_t numRetries, void* user) {
-    LOG("numRetries: %d", numRetries);
-    //    counter.m32++;
-    //    transmitter.queueTransmission(counter.m8, sizeof(counter), txCallback, NULL);
-    //    transmitter.notify();
+    counter.m32++;
+
+    if (numRetries > 0) {
+        LOG("numRetries: %d", numRetries);
+    }
 };
 
 static void rxCallback(uint8_t bytes[], size_t numBytes, void* user) {
-    LOG("%d", *(reinterpret_cast<uint32_t*>(bytes)));
+    BUFFER("bytes:", bytes, numBytes);
 };
 
 static void buttonCallback(void* user){
@@ -74,23 +77,24 @@ extern "C" void applicationTaskFunction(void const* argument) {
     transmitter.setOutputPower(OutputPower_m18dBm);
     transmitter.setRetryCount(0xF);
     transmitter.setRetryDelay(0xF);
-    transmitter.switchOperatingMode(OperatingMode_Tx);
 
     receiver.configureRxPipe(0, address);
     receiver.setDataRate(DataRate_1MBPS);
     receiver.setCrcConfig(CrcConfig_2Bytes);
     receiver.setChannel(2);
     receiver.setOutputPower(OutputPower_m18dBm);
-    receiver.switchOperatingMode(OperatingMode_Rx);
 
     receiver.startListening(0, rxCallback, NULL);
 
+    transmitter.switchOperatingMode(OperatingMode_Tx);
+    receiver.switchOperatingMode(OperatingMode_Rx);
+
     for (;;) {
-        led[0].toggle();
+        led[0].set();
         transmitter.queueTransmission(counter.m8, sizeof(counter), txCallback, NULL);
         transmitter.notify();
-        vTaskDelay(250);
-        led[0].toggle();
+        led[0].clear();
+
         vTaskDelay(250);
     }
 }
