@@ -61,6 +61,8 @@ static void buttonCallback(void* user){
 };
 
 extern "C" void initializeApplication() {
+    button.enableInterrupt(buttonCallback, NULL);
+
     transmitter.create(256, Task_Priority_MID);
     receiver.create(256, Task_Priority_HIGH);
 }
@@ -68,10 +70,8 @@ extern "C" void initializeApplication() {
 extern "C" void applicationTaskFunction(void const* argument) {
     vTaskDelay(1000);
 
-    button.enableInterrupt(buttonCallback, NULL);
-
     transmitter.configureTxPipe(address);
-    transmitter.setDataRate(DataRate_1MBPS);
+    transmitter.setDataRate(DataRate_2MBPS);
     transmitter.setCrcConfig(CrcConfig_2Bytes);
     transmitter.setChannel(2);
     transmitter.setOutputPower(OutputPower_m18dBm);
@@ -79,10 +79,12 @@ extern "C" void applicationTaskFunction(void const* argument) {
     transmitter.setRetryDelay(0xF);
 
     receiver.configureRxPipe(0, address);
-    receiver.setDataRate(DataRate_1MBPS);
+    receiver.setDataRate(DataRate_2MBPS);
     receiver.setCrcConfig(CrcConfig_2Bytes);
     receiver.setChannel(2);
     receiver.setOutputPower(OutputPower_m18dBm);
+    receiver.setRetryCount(0xF);
+    receiver.setRetryDelay(0xF);
 
     receiver.startListening(0, rxCallback, NULL);
 
