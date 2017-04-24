@@ -12,7 +12,9 @@
 #include "led.hpp"
 #include "spi.hpp"
 
-const uint64_t address = 0xE7E7E7E7E7;
+const uint32_t baseAddress_0 = 0xE7E7E7E7;
+const uint32_t baseAddress_1 = 0xC2C2C2C2;
+const uint8_t addressPrefix  = 0xE7;
 
 union Counter_t {
     uint8_t m8[4];
@@ -70,7 +72,9 @@ extern "C" void initializeApplication() {
 extern "C" void applicationTaskFunction(void const* argument) {
     vTaskDelay(1000);
 
-    transmitter.configureTxPipe(address);
+    transmitter.setTxBaseAddress(baseAddress_0);
+    transmitter.setTxAddressPrefix(addressPrefix);
+
     transmitter.setDataRate(DataRate_2MBPS);
     transmitter.setCrcConfig(CrcConfig_2Bytes);
     transmitter.setChannel(2);
@@ -78,7 +82,9 @@ extern "C" void applicationTaskFunction(void const* argument) {
     transmitter.setRetryCount(0xF);
     transmitter.setRetryDelay(0xF);
 
-    receiver.configureRxPipe(0, address);
+    receiver.setRxBaseAddress_0(baseAddress_0);
+    receiver.setRxAddressPrefix(0, addressPrefix);
+
     receiver.setDataRate(DataRate_2MBPS);
     receiver.setCrcConfig(CrcConfig_2Bytes);
     receiver.setChannel(2);
