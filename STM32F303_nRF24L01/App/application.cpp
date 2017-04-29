@@ -44,8 +44,8 @@ static void buttonCallback(void* user){};
 extern "C" void initializeApplication() {
     button.enableInterrupt(buttonCallback, NULL);
 
-    transmitter.create(256, Task_Priority_MID);
-    receiver.create(256, Task_Priority_HIGH);
+    transmitter.create(256, Task_Priority_LOW);
+    receiver.create(256, Task_Priority_LOW);
 }
 
 extern "C" void applicationTaskFunction(void const* argument) {
@@ -94,21 +94,22 @@ extern "C" void applicationTaskFunction(void const* argument) {
     transmitter.enterTxMode();
 
     for (;;) {
-        RF24_Package_t txPackage, rxPackage;
+        RF24_Package_t package;
 
         if (txQueue.queueSpacesAvailable()) {
-            memcpy(txPackage.bytes, &counter, sizeof(counter));
-            txPackage.numBytes = sizeof(counter);
-            txQueue.enqueue(txPackage);
-            transmitter.notify();
+            memcpy(package.bytes, &counter, sizeof(counter));
+            package.numBytes = sizeof(counter);
+            txQueue.enqueue(package);
             counter++;
         }
 
         if (rxQueue.queueMessagesWaiting()) {
-            rxQueue.dequeue(rxPackage);
-            BUFFER("package", rxPackage.bytes, rxPackage.numBytes);
+            rxQueue.dequeue(package);
+            BUFFER("package", package.bytes, package.numBytes);
         }
 
-        vTaskDelay(100);
+        transmitter.notify();
+
+        vTaskDelay(10);
     }
 }

@@ -116,7 +116,7 @@ int main(void)
 
   /* Create the thread(s) */
   /* definition and creation of applicationTask */
-  osThreadDef(applicationTask, applicationTaskFunction, osPriorityIdle, 0, 256);
+  osThreadDef(applicationTask, applicationTaskFunction, osPriorityNormal, 0, 256);
   applicationTaskHandle = osThreadCreate(osThread(applicationTask), NULL);
 
   /* USER CODE BEGIN RTOS_THREADS */
