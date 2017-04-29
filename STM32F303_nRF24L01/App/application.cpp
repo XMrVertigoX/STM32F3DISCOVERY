@@ -12,14 +12,12 @@
 #include "led.hpp"
 #include "spi.hpp"
 
-static const RF24_Address_t address = {.components = {0xE1, 0xE2E3E4E5}};
+static const RF24_Address_t address = {.components = {0xE7, 0xE7E7E7E7}};
 
-union Counter_t {
-    uint8_t m8[4];
-    uint32_t m32;
-};
+static Queue<RF24_Package_t> rxQueue(3);
+static Queue<RF24_Package_t> txQueue(3);
 
-Counter_t counter = {.m32 = 0};
+uint32_t counter = 0;
 
 extern SPI_HandleTypeDef hspi2;
 
@@ -41,16 +39,7 @@ RF24_ESB receiver(port2_SPI, port2_CE, port2_INT);
 
 Led led[] = {Led(LD3), Led(LD5), Led(LD7), Led(LD9), Led(LD10), Led(LD8), Led(LD6), Led(LD4)};
 
-static void txCallback(int8_t numRetries, void* user) {
-    LOG("txCallback");
-};
-
-static void buttonCallback(void* user){
-    //    button.disableInterrupt();
-    //    transmitter.queueTransmission(counter.m8, sizeof(counter), txCallback, NULL);
-    //    led[1].toggle();
-    //    transmitter.notifyFromISR();
-};
+static void buttonCallback(void* user){};
 
 extern "C" void initializeApplication() {
     button.enableInterrupt(buttonCallback, NULL);
@@ -60,8 +49,12 @@ extern "C" void initializeApplication() {
 }
 
 extern "C" void applicationTaskFunction(void const* argument) {
-    Queue<RF24_Package_t> rxQueue(3);
     RF24_Status_t status = RF24_Status_Success;
+
+    vTaskDelay(100);
+
+    transmitter.enterStandbyMode();
+    receiver.enterStandbyMode();
 
     status = transmitter.setTxAddress(address);
     LOG("setTxAddress: %d", status);
@@ -77,6 +70,8 @@ extern "C" void applicationTaskFunction(void const* argument) {
     LOG("setRetryCount: %d", status);
     status = transmitter.setRetryDelay(0xF);
     LOG("setRetryDelay: %d", status);
+    status = transmitter.enableTxDataPipe(txQueue);
+    LOG("enableTxDataPipe: %d", status);
 
     status = receiver.setRxAddress(0, address);
     LOG("setRxAddress: %d", status);
@@ -88,20 +83,32 @@ extern "C" void applicationTaskFunction(void const* argument) {
     LOG("setChannel: %d", status);
     status = receiver.setOutputPower(RF24_OutputPower::Power_m18dBm);
     LOG("setOutputPower: %d", status);
+    status = receiver.setRetryCount(0xF);
+    LOG("setRetryCount: %d", status);
+    status = receiver.setRetryDelay(0xF);
+    LOG("setRetryDelay: %d", status);
+    status = receiver.enableRxDataPipe(0, rxQueue);
+    LOG("enableRxDataPipe: %d", status);
 
-    transmitter.enterTxMode();
     receiver.enterRxMode();
-
-    vTaskDelay(1000);
+    transmitter.enterTxMode();
 
     for (;;) {
-        led[0].set();
-        transmitter.queuePackage(counter.m8, sizeof(counter), txCallback, NULL);
-        transmitter.notify();
+        RF24_Package_t txPackage, rxPackage;
 
-        RF24_Package_t package;
-        rxQueue.dequeue(package);
-        BUFFER("package", package.bytes, package.numBytes);
-        led[0].clear();
+        if (txQueue.queueSpacesAvailable()) {
+            memcpy(txPackage.bytes, &counter, sizeof(counter));
+            txPackage.numBytes = sizeof(counter);
+            txQueue.enqueue(txPackage);
+            transmitter.notify();
+            counter++;
+        }
+
+        if (rxQueue.queueMessagesWaiting()) {
+            rxQueue.dequeue(rxPackage);
+            BUFFER("package", rxPackage.bytes, rxPackage.numBytes);
+        }
+
+        vTaskDelay(100);
     }
 }
