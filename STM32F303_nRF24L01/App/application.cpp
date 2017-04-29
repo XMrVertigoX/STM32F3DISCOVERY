@@ -12,9 +12,7 @@
 #include "led.hpp"
 #include "spi.hpp"
 
-const uint32_t baseAddress   = 0xE7E7E7E7;
-const uint32_t baseAddress_1 = 0xC2C2C2C2;
-const uint8_t addressPrefix  = 0xE7;
+static const RF24_Address_t address = {.components = {0xE1, 0xE2E3E4E5}};
 
 union Counter_t {
     uint8_t m8[4];
@@ -38,21 +36,13 @@ Spi port2_SPI(hspi2, port2_CS);
 
 Gpio button(BUTTON_GPIO_Port, BUTTON_Pin);
 
-nRF24L01P_ESB transmitter(port1_SPI, port1_CE, port1_INT);
-nRF24L01P_ESB receiver(port2_SPI, port2_CE, port2_INT);
+RF24_ESB transmitter(port1_SPI, port1_CE, port1_INT);
+RF24_ESB receiver(port2_SPI, port2_CE, port2_INT);
 
 Led led[] = {Led(LD3), Led(LD5), Led(LD7), Led(LD9), Led(LD10), Led(LD8), Led(LD6), Led(LD4)};
 
 static void txCallback(int8_t numRetries, void* user) {
-    counter.m32++;
-
-    if (numRetries > 0) {
-        LOG("numRetries: %d", numRetries);
-    }
-};
-
-static void rxCallback(uint8_t bytes[], size_t numBytes, void* user) {
-    BUFFER("bytes:", bytes, numBytes);
+    LOG("txCallback");
 };
 
 static void buttonCallback(void* user){
@@ -70,35 +60,48 @@ extern "C" void initializeApplication() {
 }
 
 extern "C" void applicationTaskFunction(void const* argument) {
+    Queue<RF24_Package_t> rxQueue(3);
+    RF24_Status_t status = RF24_Status_Success;
+
+    status = transmitter.setTxAddress(address);
+    LOG("setTxAddress: %d", status);
+    status = transmitter.setDataRate(RF24_DataRate::High_2MBPS);
+    LOG("setDataRate: %d", status);
+    status = transmitter.setCrcConfig(RF24_CRCConfig::CRC_16);
+    LOG("setCrcConfig: %d", status);
+    status = transmitter.setChannel(2);
+    LOG("setChannel: %d", status);
+    status = transmitter.setOutputPower(RF24_OutputPower::Power_m18dBm);
+    LOG("setOutputPower: %d", status);
+    status = transmitter.setRetryCount(0xF);
+    LOG("setRetryCount: %d", status);
+    status = transmitter.setRetryDelay(0xF);
+    LOG("setRetryDelay: %d", status);
+
+    status = receiver.setRxAddress(0, address);
+    LOG("setRxAddress: %d", status);
+    status = receiver.setDataRate(RF24_DataRate::High_2MBPS);
+    LOG("setDataRate: %d", status);
+    status = receiver.setCrcConfig(RF24_CRCConfig::CRC_16);
+    LOG("setCrcConfig: %d", status);
+    status = receiver.setChannel(2);
+    LOG("setChannel: %d", status);
+    status = receiver.setOutputPower(RF24_OutputPower::Power_m18dBm);
+    LOG("setOutputPower: %d", status);
+
+    transmitter.enterTxMode();
+    receiver.enterRxMode();
+
     vTaskDelay(1000);
-
-    transmitter.setTxBaseAddress(baseAddress);
-    transmitter.setTxAddressPrefix(addressPrefix);
-    transmitter.setDataRate(DataRate_2MBPS);
-    transmitter.setCrcConfig(CrcConfig_2Bytes);
-    transmitter.setChannel(2);
-    transmitter.setOutputPower(OutputPower_m18dBm);
-    transmitter.setRetryCount(0xF);
-    transmitter.setRetryDelay(0xF);
-
-    receiver.setRxBaseAddress_0(baseAddress);
-    receiver.setRxAddressPrefix(0, addressPrefix);
-    receiver.setDataRate(DataRate_2MBPS);
-    receiver.setCrcConfig(CrcConfig_2Bytes);
-    receiver.setChannel(2);
-    receiver.setOutputPower(OutputPower_m18dBm);
-
-    receiver.startListening(0, rxCallback, NULL);
-
-    transmitter.switchOperatingMode(OperatingMode_Tx);
-    receiver.switchOperatingMode(OperatingMode_Rx);
 
     for (;;) {
         led[0].set();
-        transmitter.queueTransmission(counter.m8, sizeof(counter), txCallback, NULL);
+        transmitter.queuePackage(counter.m8, sizeof(counter), txCallback, NULL);
         transmitter.notify();
-        led[0].clear();
 
-        vTaskDelay(250);
+        RF24_Package_t package;
+        rxQueue.dequeue(package);
+        BUFFER("package", package.bytes, package.numBytes);
+        led[0].clear();
     }
 }
