@@ -19,7 +19,7 @@ SYMBOLS += ARM_MATH_CM4
 # ----- Source files ----------------------------------------------------------
 
 INCLUDE_DIRS += $(LIBS)
-INCLUDE_DIRS += $(LIBS)/SEGGER_RTT_V614c/RTT
+INCLUDE_DIRS += $(LIBS)/SEGGER_RTT/RTT
 
 INCLUDE_DIRS += Drivers/CMSIS/Device/ST/STM32F3xx/Include
 INCLUDE_DIRS += Drivers/CMSIS/Include
@@ -31,7 +31,7 @@ INCLUDE_DIRS += Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM4F
 
 INCLUDE_DIRS += ./Config
 
-SOURCE_FILES += $(LIBS)/SEGGER_RTT_V614c/RTT/SEGGER_RTT.c
+SOURCE_FILES += $(LIBS)/SEGGER_RTT/RTT/SEGGER_RTT.c
 SOURCE_FILES += $(wildcard $(LIBS)/xXx/components/wireless/nrf24l01p/*.cpp)
 SOURCE_FILES += $(wildcard $(LIBS)/xXx/os/*.cpp)
 SOURCE_FILES += $(wildcard $(LIBS)/xXx/support/*.cpp)
