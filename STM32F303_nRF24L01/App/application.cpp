@@ -12,7 +12,7 @@
 #include "led.hpp"
 #include "spi.hpp"
 
-static const RF24_Address_t address = {.components = {0xE7, 0xE7E7E7E7}};
+static const RF24_Address_t address = 0xE7E7E7E7E7;
 
 static Queue<RF24_Package_t> rxQueue(3);
 static Queue<RF24_Package_t> txQueue(3);
@@ -49,7 +49,7 @@ extern "C" void initializeApplication() {
 }
 
 extern "C" void applicationTaskFunction(void const* argument) {
-    RF24_Status_t status = RF24_Status_Success;
+    RF24_Status status = RF24_Status::Success;
 
     vTaskDelay(100);
 
@@ -58,13 +58,13 @@ extern "C" void applicationTaskFunction(void const* argument) {
 
     status = transmitter.setTxAddress(address);
     LOG("setTxAddress: %d", status);
-    status = transmitter.setDataRate(RF24_DataRate::High_2MBPS);
+    status = transmitter.setDataRate(RF24_DataRate::DR_2MBPS);
     LOG("setDataRate: %d", status);
-    status = transmitter.setCrcConfig(RF24_CRCConfig::CRC_16);
+    status = transmitter.setCrcConfig(RF24_CRCConfig::CRC_2Bytes);
     LOG("setCrcConfig: %d", status);
     status = transmitter.setChannel(2);
     LOG("setChannel: %d", status);
-    status = transmitter.setOutputPower(RF24_OutputPower::Power_m18dBm);
+    status = transmitter.setOutputPower(RF24_OutputPower::PWR_18dBm);
     LOG("setOutputPower: %d", status);
     status = transmitter.setRetryCount(0xF);
     LOG("setRetryCount: %d", status);
@@ -75,13 +75,13 @@ extern "C" void applicationTaskFunction(void const* argument) {
 
     status = receiver.setRxAddress(0, address);
     LOG("setRxAddress: %d", status);
-    status = receiver.setDataRate(RF24_DataRate::High_2MBPS);
+    status = receiver.setDataRate(RF24_DataRate::DR_2MBPS);
     LOG("setDataRate: %d", status);
-    status = receiver.setCrcConfig(RF24_CRCConfig::CRC_16);
+    status = receiver.setCrcConfig(RF24_CRCConfig::CRC_2Bytes);
     LOG("setCrcConfig: %d", status);
     status = receiver.setChannel(2);
     LOG("setChannel: %d", status);
-    status = receiver.setOutputPower(RF24_OutputPower::Power_m18dBm);
+    status = receiver.setOutputPower(RF24_OutputPower::PWR_18dBm);
     LOG("setOutputPower: %d", status);
     status = receiver.setRetryCount(0xF);
     LOG("setRetryCount: %d", status);
