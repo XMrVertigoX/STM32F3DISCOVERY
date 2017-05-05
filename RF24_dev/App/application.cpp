@@ -43,6 +43,8 @@ static void buttonCallback(void* user){};
 
 extern "C" void initializeApplication() {
     button.enableInterrupt(buttonCallback, NULL);
+    port1_INT.enableInterrupt([](void* user) { transmitter.notifyFromISR(); }, NULL);
+    port2_INT.enableInterrupt([](void* user) { receiver.notifyFromISR(); }, NULL);
 
     transmitter.create(256, Task_Priority_LOW);
     receiver.create(256, Task_Priority_LOW);
@@ -83,12 +85,10 @@ extern "C" void applicationTaskFunction(void const* argument) {
     LOG("setChannel: %d", status);
     status = receiver.setOutputPower(RF24_OutputPower::PWR_18dBm);
     LOG("setOutputPower: %d", status);
-    status = receiver.setRetryCount(0xF);
-    LOG("setRetryCount: %d", status);
-    status = receiver.setRetryDelay(0xF);
-    LOG("setRetryDelay: %d", status);
     status = receiver.enableRxDataPipe(0, rxQueue);
     LOG("enableRxDataPipe: %d", status);
+
+    assert(status == RF24_Status::Success);
 
     receiver.enterRxMode();
     transmitter.enterTxMode();

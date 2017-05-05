@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>STM32F303_nRF24L01</name>
+	<name>RF24_dev (STM32F3DISCOVERY)</name>
 	<comment></comment>
 	<projects>
 	</projects>
@@ -28,7 +28,7 @@
 		<link>
 			<name>libs</name>
 			<type>2</type>
-			<locationURI>copy_PARENT/libs</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/libs</locationURI>
 		</link>
 	</linkedResources>
 	<filteredResources>
