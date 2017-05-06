@@ -14,8 +14,8 @@
 
 static const RF24_Address_t address = 0xE7E7E7E7E7;
 
-static Queue<RF24_Package_t> rxQueue(3);
-static Queue<RF24_Package_t> txQueue(3);
+static Queue<RF24_DataPackage_t> rxQueue(3);
+static Queue<RF24_DataPackage_t> txQueue(3);
 
 uint32_t counter = 0;
 
@@ -42,9 +42,9 @@ Led led[] = {Led(LD3), Led(LD5), Led(LD7), Led(LD9), Led(LD10), Led(LD8), Led(LD
 static void buttonCallback(void* user){};
 
 extern "C" void initializeApplication() {
+    LOG("%s", __PRETTY_FUNCTION__);
+
     button.enableInterrupt(buttonCallback, NULL);
-    port1_INT.enableInterrupt([](void* user) { transmitter.notifyFromISR(); }, NULL);
-    port2_INT.enableInterrupt([](void* user) { receiver.notifyFromISR(); }, NULL);
 
     transmitter.create(256, Task_Priority_LOW);
     receiver.create(256, Task_Priority_LOW);
@@ -72,7 +72,7 @@ extern "C" void applicationTaskFunction(void const* argument) {
     LOG("setRetryCount: %d", status);
     status = transmitter.setRetryDelay(0xF);
     LOG("setRetryDelay: %d", status);
-    status = transmitter.enableTxDataPipe(txQueue);
+    status = transmitter.configureTxDataPipe(&txQueue);
     LOG("enableTxDataPipe: %d", status);
 
     status = receiver.setRxAddress(0, address);
@@ -85,7 +85,7 @@ extern "C" void applicationTaskFunction(void const* argument) {
     LOG("setChannel: %d", status);
     status = receiver.setOutputPower(RF24_OutputPower::PWR_18dBm);
     LOG("setOutputPower: %d", status);
-    status = receiver.enableRxDataPipe(0, rxQueue);
+    status = receiver.configureRxDataPipe(0, &rxQueue);
     LOG("enableRxDataPipe: %d", status);
 
     assert(status == RF24_Status::Success);
@@ -94,7 +94,7 @@ extern "C" void applicationTaskFunction(void const* argument) {
     transmitter.enterTxMode();
 
     for (;;) {
-        RF24_Package_t package;
+        RF24_DataPackage_t package;
 
         if (txQueue.queueSpacesAvailable()) {
             memcpy(package.bytes, &counter, sizeof(counter));
