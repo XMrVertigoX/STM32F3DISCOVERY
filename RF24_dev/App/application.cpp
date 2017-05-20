@@ -4,7 +4,7 @@
 
 #include <stm32f3xx_hal_conf.h>
 
-#include <xXx/components/wireless/nrf24l01p/nrf24l01p_esb.hpp>
+#include <xXx/components/wireless/rf24/rf24.hpp>
 #include <xXx/templates/queue.hpp>
 #include <xXx/utils/logging.hpp>
 
@@ -34,8 +34,8 @@ Spi port2_SPI(hspi2, port2_CS);
 
 Gpio button(BUTTON_GPIO_Port, BUTTON_Pin);
 
-RF24_ESB transmitter(port1_SPI, port1_CE, port1_INT);
-RF24_ESB receiver(port2_SPI, port2_CE, port2_INT);
+RF24 transmitter(port1_SPI, port1_CE, port1_INT);
+RF24 receiver(port2_SPI, port2_CE, port2_INT);
 
 Led led[] = {Led(LD3), Led(LD5), Led(LD7), Led(LD9), Led(LD10), Led(LD8), Led(LD6), Led(LD4)};
 
@@ -45,9 +45,6 @@ extern "C" void initializeApplication() {
     LOG("%s", __PRETTY_FUNCTION__);
 
     button.enableInterrupt(buttonCallback, NULL);
-
-    transmitter.create(256, Task_Priority_LOW);
-    receiver.create(256, Task_Priority_LOW);
 }
 
 extern "C" void applicationTaskFunction(void const* argument) {
@@ -108,8 +105,7 @@ extern "C" void applicationTaskFunction(void const* argument) {
             BUFFER("package", package.bytes, package.numBytes);
         }
 
-        transmitter.notify();
-
-        vTaskDelay(10);
+        transmitter.loop();
+        receiver.loop();
     }
 }

@@ -32,7 +32,7 @@ INCLUDE_DIRS += Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM4F
 INCLUDE_DIRS += ./Config
 
 SOURCE_FILES += $(LIBS)/SEGGER_RTT/RTT/SEGGER_RTT.c
-SOURCE_FILES += $(wildcard $(LIBS)/xXx/components/wireless/nrf24l01p/*.cpp)
+SOURCE_FILES += $(wildcard $(LIBS)/xXx/components/wireless/rf24/*.cpp)
 SOURCE_FILES += $(wildcard $(LIBS)/xXx/os/*.cpp)
 SOURCE_FILES += $(wildcard $(LIBS)/xXx/support/*.cpp)
 SOURCE_FILES += $(wildcard $(LIBS)/xXx/utils/*.cpp)
